@@ -10,6 +10,7 @@ from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
 from astropy.table import Table
 import pandas as pd
+import numpy as np
 
 ### Files and folders
 root_dir = "/g/lu/data/gc/" # root data directory
@@ -82,3 +83,31 @@ def read_and_clean(data_file=meta_file):
     meta_clean = clean(meta_data)
     
     return meta_clean
+
+def split_and_scale(X, y):
+    """
+    Perform a train-test split on the X and y data and scale the data to X_train
+    """
+    train_X, test_X, train_y, test_y = train_test_split(X, y)
+    s = StandardScaler()
+    s.fit(train_X)
+    train_X = s.transform(train_X)
+    test_X = s.transform(test_X)
+    return train_X, test_X, train_y, test_y
+
+def run_PCA(train_X, test_X, tolerance):
+    """
+    Runs PCA on data set X_train and scales X_train and X_test to the principal components with passed tolerance
+    """
+    ### Basic PCA - extracts features which have the most variation in the data
+    pca = PCA(1-tolerance)
+    pca.fit(train_X)
+    train_X = pca.transform(train_X)
+    test_X = pca.transform(test_X)
+    return train_X, test_X
+
+def MAPE(pred_y, y):
+    """
+    Returns the mean absolute percentage error of the true vs. predicted y-values
+    """
+    return np.mean(np.abs((pred_y-y)/y))
