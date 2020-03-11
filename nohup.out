@@ -1,0 +1,450 @@
+bash: virtual_environment/bin/activate: No such file or directory
+[I 11:16:36.483 NotebookApp] The port 8889 is already in use, trying another port.
+[I 11:16:36.536 NotebookApp] JupyterLab extension loaded from /opt/anaconda3/envs/astroconda/lib/python3.7/site-packages/jupyterlab
+[I 11:16:36.536 NotebookApp] JupyterLab application directory is /opt/anaconda3/envs/astroconda/share/jupyter/lab
+[I 11:16:36.537 NotebookApp] Serving notebooks from local directory: /u/emily_ramey
+[I 11:16:36.537 NotebookApp] The Jupyter Notebook is running at:
+[I 11:16:36.538 NotebookApp] http://localhost:8890/
+[I 11:16:36.538 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bash: virtual_environment/bin/activate: No such file or directory
+[I 11:18:48.800 NotebookApp] The port 8889 is already in use, trying another port.
+[I 11:18:48.804 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 11:18:48.804 NotebookApp] The Jupyter Notebook is running at:
+[I 11:18:48.804 NotebookApp] http://localhost:8890/
+[I 11:18:48.804 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8889: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8889
+Could not request local forwarding.
+bash: virtual_environment/bin/activate: No such file or directory
+[I 11:24:27.651 NotebookApp] The port 8889 is already in use, trying another port.
+[I 11:24:27.651 NotebookApp] The port 8890 is already in use, trying another port.
+[I 11:24:27.655 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 11:24:27.655 NotebookApp] The Jupyter Notebook is running at:
+[I 11:24:27.655 NotebookApp] http://localhost:8891/
+[I 11:24:27.655 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8889: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8889
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 11:26:30.489 NotebookApp] The port 8889 is already in use, trying another port.
+[I 11:26:30.489 NotebookApp] The port 8890 is already in use, trying another port.
+[I 11:26:30.489 NotebookApp] The port 8891 is already in use, trying another port.
+[I 11:26:30.493 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 11:26:30.493 NotebookApp] The Jupyter Notebook is running at:
+[I 11:26:30.493 NotebookApp] http://localhost:8892/
+[I 11:26:30.493 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8889: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8889
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 11:28:05.784 NotebookApp] The port 8890 is already in use, trying another port.
+[I 11:28:05.784 NotebookApp] The port 8891 is already in use, trying another port.
+[I 11:28:05.784 NotebookApp] The port 8892 is already in use, trying another port.
+[I 11:28:05.788 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 11:28:05.788 NotebookApp] The Jupyter Notebook is running at:
+[I 11:28:05.788 NotebookApp] http://localhost:8893/
+[I 11:28:05.788 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 11:28:15.685 NotebookApp] 302 GET / (::1) 1.29ms
+[W 11:28:15.740 NotebookApp] Clearing invalid/expired login cookie username-localhost-8890
+[W 11:28:15.743 NotebookApp] Clearing invalid/expired login cookie username-localhost-8890
+[I 11:28:15.744 NotebookApp] 302 GET /tree? (::1) 6.12ms
+[I 11:28:19.783 NotebookApp] 302 POST /login?next=%2Ftree%3F (::1) 2.98ms
+[I 11:28:35.684 NotebookApp] Kernel started: 43de98c0-bde2-4f82-b60e-0b8b71b3b32d
+[I 11:28:38.633 NotebookApp] Starting buffering for 43de98c0-bde2-4f82-b60e-0b8b71b3b32d:8c19a42fe6f84c8dabfc1cb8e142d1ac
+[C 11:52:32.198 NotebookApp] received signal 15, stopping
+[I 11:52:32.201 NotebookApp] Shutting down 1 kernel
+[I 11:52:32.502 NotebookApp] Kernel shutdown: 43de98c0-bde2-4f82-b60e-0b8b71b3b32d
+[C 11:52:37.244 NotebookApp] received signal 15, stopping
+[I 11:52:37.248 NotebookApp] Shutting down 0 kernels
+[C 11:52:40.380 NotebookApp] received signal 15, stopping
+[I 11:52:40.384 NotebookApp] Shutting down 0 kernels
+[C 11:52:43.067 NotebookApp] received signal 15, stopping
+[I 11:52:43.071 NotebookApp] Shutting down 0 kernels
+bash: line 0: kill: $.: arguments must be process or job IDs
+bash: line 0: kill: virtual_environment/bin/activate: arguments must be process or job IDs
+[I 11:59:23.012 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 11:59:23.013 NotebookApp] The Jupyter Notebook is running at:
+[I 11:59:23.013 NotebookApp] http://localhost:8890/
+[I 11:59:23.013 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 12:00:02.910 NotebookApp] 302 GET / (::1) 1.27ms
+[I 12:00:15.064 NotebookApp] Shutting down on /api/shutdown request.
+[I 12:00:15.067 NotebookApp] Shutting down 0 kernels
+bash: line 0: kill: $.: arguments must be process or job IDs
+bash: line 0: kill: virtual_environment/bin/activate: arguments must be process or job IDs
+[I 12:02:49.643 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:02:49.643 NotebookApp] The Jupyter Notebook is running at:
+[I 12:02:49.643 NotebookApp] http://localhost:8890/
+[I 12:02:49.643 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:03:03.035 NotebookApp] 302 GET / (::1) 1.28ms
+[I 12:03:58.768 NotebookApp] Shutting down on /api/shutdown request.
+[I 12:03:58.771 NotebookApp] Shutting down 0 kernels
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:23:59.985 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:23:59.985 NotebookApp] The Jupyter Notebook is running at:
+[I 12:23:59.985 NotebookApp] http://localhost:8890/
+[I 12:23:59.985 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:24:02.455 NotebookApp] 302 GET / (::1) 1.28ms
+[I 12:24:06.733 NotebookApp] Shutting down on /api/shutdown request.
+[I 12:24:06.735 NotebookApp] Shutting down 0 kernels
+Permission denied, please try again.
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:25:40.677 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:25:40.677 NotebookApp] The Jupyter Notebook is running at:
+[I 12:25:40.677 NotebookApp] http://localhost:8890/
+[I 12:25:40.677 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:25:43.960 NotebookApp] 302 GET / (::1) 1.26ms
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:26:14.640 NotebookApp] The port 8890 is already in use, trying another port.
+[I 12:26:14.644 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:26:14.644 NotebookApp] The Jupyter Notebook is running at:
+[I 12:26:14.644 NotebookApp] http://localhost:8891/
+[I 12:26:14.644 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:26:17.650 NotebookApp] 302 GET / (::1) 1.14ms
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:35:57.857 NotebookApp] The port 8890 is already in use, trying another port.
+[I 12:35:57.857 NotebookApp] The port 8891 is already in use, trying another port.
+[I 12:35:57.861 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:35:57.861 NotebookApp] The Jupyter Notebook is running at:
+[I 12:35:57.861 NotebookApp] http://localhost:8892/
+[I 12:35:57.861 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:36:00.076 NotebookApp] 302 GET / (::1) 1.06ms
+[W 12:36:49.962 NotebookApp] 403 POST /api/shutdown (::1): '_xsrf' argument missing from POST
+[W 12:36:49.975 NotebookApp] 403 POST /api/shutdown (::1) 14.20ms referer=None
+Permission denied, please try again.
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:38:49.968 NotebookApp] The port 8890 is already in use, trying another port.
+[I 12:38:49.968 NotebookApp] The port 8891 is already in use, trying another port.
+[I 12:38:49.968 NotebookApp] The port 8892 is already in use, trying another port.
+[I 12:38:49.972 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:38:49.972 NotebookApp] The Jupyter Notebook is running at:
+[I 12:38:49.972 NotebookApp] http://localhost:8893/
+[I 12:38:49.972 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:38:52.351 NotebookApp] 302 GET / (::1) 1.17ms
+[C 12:39:03.266 NotebookApp] received signal 15, stopping
+[C 12:39:03.266 NotebookApp] received signal 15, stopping
+[C 12:39:03.266 NotebookApp] received signal 15, stopping
+[C 12:39:03.266 NotebookApp] received signal 15, stopping
+[I 12:39:03.270 NotebookApp] Shutting down 0 kernels
+[I 12:39:03.271 NotebookApp] Shutting down 0 kernels
+[I 12:39:03.270 NotebookApp] Shutting down 0 kernels
+[I 12:39:03.271 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:44:44.967 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:44:44.967 NotebookApp] The Jupyter Notebook is running at:
+[I 12:44:44.967 NotebookApp] http://localhost:8890/
+[I 12:44:44.967 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:44:47.601 NotebookApp] 302 GET / (::1) 1.30ms
+[I 12:45:04.125 NotebookApp] Shutting down on /api/shutdown request.
+[I 12:45:04.127 NotebookApp] Shutting down 0 kernels
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:46:44.518 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:46:44.518 NotebookApp] The Jupyter Notebook is running at:
+[I 12:46:44.519 NotebookApp] http://localhost:8890/
+[I 12:46:44.519 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:46:47.141 NotebookApp] 302 GET / (::1) 1.29ms
+[C 12:46:56.581 NotebookApp] received signal 15, stopping
+[I 12:46:56.586 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:48:23.266 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:48:23.266 NotebookApp] The Jupyter Notebook is running at:
+[I 12:48:23.266 NotebookApp] http://localhost:8890/
+[I 12:48:23.266 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:48:25.775 NotebookApp] 302 GET / (::1) 1.29ms
+[C 12:48:35.759 NotebookApp] received signal 15, stopping
+[I 12:48:35.763 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 12:58:31.574 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 12:58:31.574 NotebookApp] The Jupyter Notebook is running at:
+[I 12:58:31.574 NotebookApp] http://localhost:8890/
+[I 12:58:31.575 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 12:58:34.582 NotebookApp] 302 GET / (::1) 1.31ms
+[C 13:01:04.895 NotebookApp] received signal 15, stopping
+[I 13:01:04.903 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+ssh: Could not resolve hostname x86_64-apple-darwin13.4.0: nodename nor servname provided, or not known
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:19:43.553 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 13:19:43.554 NotebookApp] The Jupyter Notebook is running at:
+[I 13:19:43.554 NotebookApp] http://localhost:8890/
+[I 13:19:43.554 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 13:19:45.442 NotebookApp] 302 GET / (::1) 1.31ms
+[C 13:20:14.749 NotebookApp] received signal 15, stopping
+[I 13:20:14.754 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:24:31.637 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 13:24:31.637 NotebookApp] The Jupyter Notebook is running at:
+[I 13:24:31.637 NotebookApp] http://localhost:8890/
+[I 13:24:31.637 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 13:24:34.129 NotebookApp] 302 GET / (::1) 1.32ms
+[C 13:24:48.133 NotebookApp] received signal 15, stopping
+[I 13:24:48.137 NotebookApp] Shutting down 0 kernels
+channel 2: open failed: connect failed: Connection refused
+channel 3: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.24 port 22: Broken pipe
+usage: ssh [-46AaCfGgKkMNnqsTtVvXxYy] [-B bind_interface]
+           [-b bind_address] [-c cipher_spec] [-D [bind_address:]port]
+           [-E log_file] [-e escape_char] [-F configfile] [-I pkcs11]
+           [-i identity_file] [-J [user@]host[:port]] [-L address]
+           [-l login_name] [-m mac_spec] [-O ctl_cmd] [-o option] [-p port]
+           [-Q query_option] [-R address] [-S ctl_path] [-W host:port]
+           [-w local_tun[:remote_tun]] destination [command]
+Bad local forwarding specification 'localhost::localhost:'
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:28:18.286 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 13:28:18.287 NotebookApp] The Jupyter Notebook is running at:
+[I 13:28:18.287 NotebookApp] http://localhost:8890/
+[I 13:28:18.287 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 13:28:20.061 NotebookApp] 302 GET / (::1) 1.34ms
+[C 13:28:30.578 NotebookApp] received signal 15, stopping
+[I 13:28:30.582 NotebookApp] Shutting down 0 kernels
+channel 2: open failed: connect failed: Connection refused
+channel 3: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.24 port 22: Broken pipe
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:50:26.919 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 13:50:26.919 NotebookApp] The Jupyter Notebook is running at:
+[I 13:50:26.919 NotebookApp] http://localhost:8890/
+[I 13:50:26.919 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 13:50:28.658 NotebookApp] 302 GET / (::1) 1.29ms
+[C 13:51:52.373 NotebookApp] received signal 15, stopping
+[I 13:51:52.378 NotebookApp] Shutting down 0 kernels
+channel 2: open failed: connect failed: Connection refused
+channel 3: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:54:10.393 NotebookApp] JupyterLab extension loaded from /opt/anaconda3/envs/astroconda/lib/python3.7/site-packages/jupyterlab
+[I 13:54:10.393 NotebookApp] JupyterLab application directory is /opt/anaconda3/envs/astroconda/share/jupyter/lab
+[I 13:54:10.394 NotebookApp] Serving notebooks from local directory: /u/emily_ramey
+[I 13:54:10.394 NotebookApp] The Jupyter Notebook is running at:
+[I 13:54:10.394 NotebookApp] http://localhost:8889/
+[I 13:54:10.394 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 13:54:11.230 NotebookApp] 302 GET / (::1) 0.31ms
+[I 13:55:37.843 NotebookApp] Shutting down on /api/shutdown request.
+[I 13:55:37.846 NotebookApp] Shutting down 0 kernels
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:57:29.148 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 13:57:29.148 NotebookApp] The Jupyter Notebook is running at:
+[I 13:57:29.148 NotebookApp] http://localhost:8890/
+[I 13:57:29.148 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 13:57:31.111 NotebookApp] 302 GET / (::1) 1.02ms
+[C 13:57:37.477 NotebookApp] received signal 15, stopping
+[I 13:57:37.482 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:58:10.913 NotebookApp] The port 8890 is already in use, trying another port.
+[I 13:58:10.934 NotebookApp] JupyterLab extension loaded from /opt/anaconda3/envs/astroconda/lib/python3.7/site-packages/jupyterlab
+[I 13:58:10.934 NotebookApp] JupyterLab application directory is /opt/anaconda3/envs/astroconda/share/jupyter/lab
+[I 13:58:10.936 NotebookApp] Serving notebooks from local directory: /u/emily_ramey
+[I 13:58:10.936 NotebookApp] The Jupyter Notebook is running at:
+[I 13:58:10.936 NotebookApp] http://localhost:8891/
+[I 13:58:10.936 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 13:58:57.637 NotebookApp] The port 8890 is already in use, trying another port.
+[I 13:58:57.638 NotebookApp] The port 8891 is already in use, trying another port.
+[I 13:58:57.659 NotebookApp] JupyterLab extension loaded from /opt/anaconda3/envs/astroconda/lib/python3.7/site-packages/jupyterlab
+[I 13:58:57.659 NotebookApp] JupyterLab application directory is /opt/anaconda3/envs/astroconda/share/jupyter/lab
+[I 13:58:57.660 NotebookApp] Serving notebooks from local directory: /u/emily_ramey
+[I 13:58:57.660 NotebookApp] The Jupyter Notebook is running at:
+[I 13:58:57.660 NotebookApp] http://localhost:8892/
+[I 13:58:57.660 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 14:00:04.504 NotebookApp] The port 8890 is already in use, trying another port.
+[I 14:00:04.505 NotebookApp] The port 8891 is already in use, trying another port.
+[I 14:00:04.505 NotebookApp] The port 8892 is already in use, trying another port.
+[I 14:00:04.527 NotebookApp] JupyterLab extension loaded from /opt/anaconda3/envs/astroconda/lib/python3.7/site-packages/jupyterlab
+[I 14:00:04.527 NotebookApp] JupyterLab application directory is /opt/anaconda3/envs/astroconda/share/jupyter/lab
+[I 14:00:04.528 NotebookApp] Serving notebooks from local directory: /u/emily_ramey
+[I 14:00:04.528 NotebookApp] The Jupyter Notebook is running at:
+[I 14:00:04.528 NotebookApp] http://localhost:8893/
+[I 14:00:04.528 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 14:02:13.167 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 14:02:13.167 NotebookApp] The Jupyter Notebook is running at:
+[I 14:02:13.167 NotebookApp] http://localhost:8890/
+[I 14:02:13.168 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+[I 14:02:15.297 NotebookApp] 302 GET / (::1) 1.24ms
+[C 14:02:32.242 NotebookApp] received signal 15, stopping
+[I 14:02:32.247 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+bash: virtual_environment/bin/activate: No such file or directory
+[I 14:45:20.016 NotebookApp] The port 8889 is already in use, trying another port.
+[I 14:45:20.020 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 14:45:20.020 NotebookApp] The Jupyter Notebook is running at:
+[I 14:45:20.020 NotebookApp] http://localhost:8890/
+[I 14:45:20.020 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+Permission denied, please try again.
+bind [127.0.0.1]:8889: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8889
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+[C 14:46:00.592 NotebookApp] received signal 15, stopping
+[I 14:46:00.595 NotebookApp] Shutting down 0 kernels
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+channel 2: open failed: connect failed: Connection refused
+bash: virtual_environment/bin/activate: No such file or directory
+[I 14:48:32.112 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 14:48:32.112 NotebookApp] The Jupyter Notebook is running at:
+[I 14:48:32.112 NotebookApp] http://localhost:8900/
+[I 14:48:32.112 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 14:48:34.386 NotebookApp] 302 GET / (::1) 1.30ms
+[I 14:48:34.414 NotebookApp] 302 GET /tree? (::1) 2.22ms
+[I 14:48:42.103 NotebookApp] 302 POST /login?next=%2Ftree%3F (::1) 5.01ms
+[C 14:49:00.449 NotebookApp] received signal 15, stopping
+[I 14:49:00.453 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+bash: virtual_environment/bin/activate: No such file or directory
+bind [127.0.0.1]:8890: Address already in use
+channel_setup_fwd_listener_tcpip: cannot listen to port: 8890
+Could not request local forwarding.
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+[I 15:22:20.649 NotebookApp] Serving notebooks from local directory: /home/emily_ramey
+[I 15:22:20.649 NotebookApp] The Jupyter Notebook is running at:
+[I 15:22:20.649 NotebookApp] http://localhost:8890/
+[I 15:22:20.649 NotebookApp] Use Control-C to stop this server and shut down all kernels (twice to skip confirmation).
+[I 15:22:25.438 NotebookApp] 302 GET / (::1) 1.11ms
+[C 15:22:36.862 NotebookApp] received signal 15, stopping
+[I 15:22:36.868 NotebookApp] Shutting down 0 kernels
+channel 8: open failed: connect failed: Connection refused
+channel 9: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+channel 2: open failed: connect failed: Connection refused
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe
+packet_write_wait: Connection to 136.152.226.202 port 22: Broken pipe

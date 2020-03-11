@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+
+# Check for help option
+usage="Usage: $0: [[-u <username>] [-s <server name>] [-p <port #>]]"
+
+if [ "$1" == "-h" ]; then
+  echo usage
+  exit 0
+fi
+
+NAME=$USER
+SERVER="ugastro.berkeley.edu"
+PORT=8890
+
+while [ "$1" != "" ]; do
+    case $1 in
+        -u | --uname )          shift
+                                NAME=$1
+                                ;;
+        -s | --server )         shift
+                                SERVER=$1
+                                ;;
+	-p | --port )           shift
+                                PORT=$1
+                                ;;
+        -h | --help )           echo usage
+                                exit
+                                ;;
+        * )                     echo usage
+                                exit 1
+    esac
+    shift
+done
+
+echo $NAME
+echo $SERVER
+echo $PORT
+
+# On exit
+function cleanup {
+    echo "exiting..."
+    ssh $NAME@$SERVER "pkill -u $NAME jupyter"
+}
+trap cleanup EXIT 
+
+# Commands to log into the server and start jupyter
+nohup ssh -f $NAME@$SERVER ". virtual_environment/bin/activate; jupyter notebook --no-browser --port=$PORT"
+# Command to forward port and open browser
+nohup ssh -N -f -L localhost:$PORT:localhost:$PORT $NAME@$SERVER
+open "http://localhost:$PORT"
+# Quit properly
+while [ "$test" != "quit" ]
+do
+    read -e -p "Type "quit" to exit: " test
+done
