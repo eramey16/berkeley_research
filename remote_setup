@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+chmod +x remote_jupyter
+
+$NAME=${1?Error: Enter username}
+$SERVER=ugastro.berkeley.edu
+
+ssh-keygen
+ssh-copy-id $NAME@$SERVER
