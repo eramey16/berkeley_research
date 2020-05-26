@@ -382,7 +382,7 @@ def update():
         vprint('Created backup directory')
     if os.path.isfile(data_file):
         master_table = Table.read(data_file, format = 'fits')
-        now = datetime.datetime.now()
+        now = datetime.now()
         backup_file = backup_directory + now.strftime("%Y%m%d") + '_lgs_metadata.fits'
         master_table.write(backup_file, format = 'fits')
         vprint('Old datatable backed up as ' + backup_file)
