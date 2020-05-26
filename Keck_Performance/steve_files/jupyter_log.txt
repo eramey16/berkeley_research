@@ -1,0 +1,6 @@
+Serving notebooks from local directory: /u/emily_ramey/steve_files
+0 active kernels
+The Jupyter Notebook is running at:
+http://laser.astro.berkeley.edu:8890/?token=ec34c7c733c8dbe54958ea0d12648cf16881e1dd7b1a1bbf
+ or http://127.0.0.1:8890/?token=ec34c7c733c8dbe54958ea0d12648cf16881e1dd7b1a1bbf
+Shutdown this notebook server (y/[n])? 
