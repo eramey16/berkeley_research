@@ -1,1 +1,1 @@
-../work/Keck_Performance/lgs_metadata_compiler.py
+../lgs_metadata_compiler.py

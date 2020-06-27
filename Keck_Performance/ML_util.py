@@ -54,7 +54,7 @@ def clean(data):
     negative wind direction
     returns: the filtered array
     """
-    data_clean = data.copy().dropna()
+    data_clean = data.copy()#.dropna()
     
     # strehl
     data_clean = data_clean[data_clean['strehl']>0]
@@ -64,6 +64,9 @@ def clean(data):
     
     # wind direction
     data_clean = data_clean[data_clean['wind_direction']>=0]
+    
+    # RMS WF Residual
+    data_clean = data_clean[data_clean['LGRMSWF']<1500]
     
     return data_clean
 

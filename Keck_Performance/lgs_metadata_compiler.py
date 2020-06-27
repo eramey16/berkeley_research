@@ -84,7 +84,7 @@ def get_massdimm(dateString):
     and saves three files (mass seeing, dimm seeing, mass Cn2 profile) to subfolders
     by year and month in the current directory if they have not.
     '''
-
+    #print("date string:", dateString)
     urlRoot = 'http://mkwc.ifa.hawaii.edu/current/seeing/'
     seeing_directory = root_directory + 'seeing_data/'
     destination = seeing_directory + dateString[:6] + '/'
@@ -197,7 +197,8 @@ def populate_df(datestring, verbose=False):
             lgrmswf.append(float(hdr['LGRMSWF']))
         except:
             lgrmswf.append(np.nan)
-            
+    
+    # Holy Mother of God this could be a for loop so easily
     df['airmass'] = airmass
     df['itime'] = itime
     df['coadds'] = coadds
@@ -216,11 +217,11 @@ def populate_df(datestring, verbose=False):
 
 
     # Add DIMM, MASS, MASSPRO
-
+# Time matching ***
 #     for mjd in df['mjd']:
     for mjd in mjd_list:
         yrmon = mjd.iso.replace('-', '')[:6]
-        date = Time(mjd.value + 1, format = 'mjd')
+        date = Time(mjd.value + 1, format = 'mjd') #WHAT? Adding 1 to the date?
         obs_date_1 = date.iso.replace('-', '')[:8]
         get_massdimm(str(mjd.iso.replace('-', '')[:8]))
         get_massdimm(str(obs_date_1))
@@ -232,23 +233,25 @@ def populate_df(datestring, verbose=False):
     masspro_dates = []
     masspro_vals = []
     masspro_int = []
-        
+    
+    ### Loading the seeing data
     seeing_directory = root_directory + 'seeing_data/'
     if os.path.isfile(seeing_directory + yrmon + '/' + obs_date_1 + '.mass.dat'):
+        # MASS
         for file in glob.glob(seeing_directory + yrmon + '/*.mass.dat'):
             df_mass = pd.read_csv(file, delim_whitespace = True, header=None) 
             for i, row in df_mass.iterrows():
                 dt = hst_to_mjd(row[:6])
                 mass_dates.append(dt)
                 mass_vals.append(df_mass[6][i])
-                
+        # DIMM        
         for file in glob.glob(seeing_directory + yrmon + '/*.dimm.dat'):
             df_dimm = pd.read_csv(file, delim_whitespace = True, header=None) 
             for i, row in df_dimm.iterrows():
                 dt = hst_to_mjd(row[:6])
                 dimm_dates.append(dt)
                 dimm_vals.append(df_dimm[6][i])
-                
+        # MASSPRO        
         for file in glob.glob(seeing_directory + yrmon + '/*.masspro.dat'):
             df_masspro = pd.read_csv(file, delim_whitespace = True, header=None) 
             for i, row in df_masspro.iterrows():
@@ -271,6 +274,7 @@ def populate_df(datestring, verbose=False):
         MASSPRO = []
         MASSPRO_mjd = []
 #         for mjd in df['mjd']:
+### Time-matching (finds closest NIRC2 in time and appends to lists)
         for mjd in mjd_list:
             i_mass, mjd_mass = find_nearest(np.array(mass_dates), mjd)
             i_dimm, mjd_dimm = find_nearest(np.array(dimm_dates), mjd)
@@ -302,7 +306,8 @@ def populate_df(datestring, verbose=False):
         df['MASSPRO'] = MASSPRO
         df['MASSPRO_mjd'] = MASSPRO_mjd
         df['MASSPRO_delta_t'] = np.subtract(df['mjd'], df['MASSPRO_mjd'])
-    else:
+    else: ### Only if we didn't have data for that night
+        ######## AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
         df['MASS'] = np.nan
         df['MASS_mjd'] = np.nan
         df['MASS_delta_t'] = np.nan
@@ -324,7 +329,8 @@ def populate_df(datestring, verbose=False):
     
     year = '20' + datestring[0:2]
     yr_month = year + '_' + month_number(datestring[2:5])
-    cfht_file = 'cfht_data/' + year + '/' + yr_month + '.dat'
+    
+    cfht_file = '/u/jlu/code/python/nirc2/nirc2/reduce/weather/cfht-wx.' + year + "." + month_number(datestring[2:5]) + '.dat'
     cfht_columns = 'year', 'month', 'day', 'hour', 'minute', 'wind_speed', 'wind_direction', 'temperature', 'relative_humidity', 'pressure'
     df_cfht = pd.read_csv(cfht_file, delim_whitespace = True, header=None)
 
@@ -384,7 +390,7 @@ def update():
         master_table = Table.read(data_file, format = 'fits')
         now = datetime.now()
         backup_file = backup_directory + now.strftime("%Y%m%d") + '_lgs_metadata.fits'
-        master_table.write(backup_file, format = 'fits')
+        master_table.write(backup_file, format = 'fits', overwrite=True)
         vprint('Old datatable backed up as ' + backup_file)
 
         Master_df = master_table.to_pandas()
