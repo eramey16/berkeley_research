@@ -9,72 +9,44 @@ import pandas as pd
 plot_dir = "/u/emily_ramey/work/Keck_Performance/plots/data_on_data/"
 
 default_settings = {
-    'wind_speed': {
-        'label': 'Wind Speed [kts]',
-        'abbrv': 'wspeed'
+    'label': {
+        'mass': 'MASS',
+        'dimm': 'DIMM',
+        'wind_speed': 'Wind Speed [kts]',
+        'wind_direction': 'Wind Direction',
+        'temperature': 'Temperature [C]',
+        'pressure': 'Pressure [mb]',
+        'strehl': 'Strehl Ratio',
+        'fwhm': 'FWHM [mas]',
+        'mjd': 'MJD',
+        'az': 'Azimuth',
+        'relative_humidity': 'Relative Humidity',
+        'airmass': 'Airmass',
+        'lgrmswf': 'RMS WF Residual [nm]',
+        'aolbfwhm': 'LB-FWHM [as]',
+        'lsamppwr': 'Laser Power [W]',
+        'aoaomed': 'AO Camera Light [counts]',
+        'wsfrrt': 'WFS Frame Rate',
+        'dmgain': 'Target CB gain',
+        'dtgain': 'Tip-Tilt Loop Gain',
+        'tubetemp': 'Tube Temperature [C]'
     },
-    'temperature': {
-        'label': 'Temperature [C]',
-        'abbrv': 'tmp'
+    'abbrv': {
+        'wind_speed': 'wspeed',
+        'temperature': 'tmp',
+        'pressure': 'P',
+        'strehl': 'str',
+        'relative_humidity': 'hum',
+        'airmass': 'am',
+        'wind_direction': 'wdir',
+        'lgrmswf': 'rms-resid',
+        'aolbfwhm': 'lbfw',
+        'lsamppwr': 'lpow',
+        'aoaomed': 'aocam',
     },
-    'pressure': {
-        'label': 'Pressure [mb]',
-        'abbrv': 'P'
-    },
-    'strehl': {
-        'label': 'Strehl Ratio',
-        'abbrv': 'str',
-        'lim': (0,.6)
-    },
-    'fwhm': {
-        'label': 'FWHM [mas]',
-        'lim': (45, 125),
-    },
-    'mjd': {
-        'label': 'MJD'
-    },
-    'az': {
-        'label': 'Azimuth'
-    },
-    'relative_humidity': {
-        'label': 'Relative Humidity',
-        'abbrv': 'hum'
-    },
-    'airmass': {
-        'label': 'Airmass',
-        'abbrv': 'am'
-    },
-    'wind_direction': {
-        'label': 'Wind Direction',
-        'abbrv': 'wdir'
-    },
-    'lgrmswf': {
-        'label': 'RMS WF Residual [nm]',
-        'abbrv': 'rms-resid'
-    },
-    'aolbfwhm': {
-        'label': 'LB-FWHM [as]',
-        'abbrv': 'lbfw'
-    },
-    'lsamppwr': {
-        'label': 'Laser Power [W]',
-        'abbrv': 'lpow'
-    },
-    'aoaomed': {
-        'label': 'AO Camera Light [counts]',
-        'abbrv': 'aocam'
-    },
-    'wsfrrt': {
-        'label': 'WFS Frame Rate'
-    },
-    'dmgain': {
-        'label': 'Target CB gain'
-    },
-    'dtgain': {
-        'label': 'Tip-Tilt Loop Gain'
-    },
-    'tubetemp': {
-        'label': 'Tube Temperature [C]'
+    'limits': {
+        'strehl': [0, 0.6],
+        'fwhm': [45, 125],
     }
 }
 
@@ -101,7 +73,7 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
     settings = settings.copy()
     for var in x_vars+y_vars+[c_var]:
         if var not in settings:
-            settings[var] = {'label':var}
+            settings['label'].update({var: var})
             
     for i,y in enumerate(y_vars):
         for j,x in enumerate(x_vars):
@@ -112,13 +84,13 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
             
             # Y labels and axes
             if j==0: # left axis
-                ax.set_ylabel(settings[y]['label'], fontsize=fontsize)
+                ax.set_ylabel(settings['label'][y], fontsize=fontsize)
             if j!=0: # other axes
                 ax.set_yticks([])
             
             # X labels and axes
             if i==y_len-1: # bottom axis
-                ax.set_xlabel(settings[x]['label'], fontsize=fontsize)
+                ax.set_xlabel(settings['label'][x], fontsize=fontsize)
             else: # other axes
                 ax.set_xticks([])
             
@@ -126,23 +98,23 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
             color = ax.scatter(data[x], data[y], s=1, 
                               c=None if c_var is None else data[c_var], cmap=cmap)
             # Set limits
-            if 'lim' in settings[y]:
-                ax.set_ylim(settings[y]['lim'])
-            if 'lim' in settings[x]:
-                ax.set_xlim(settings[x]['lim'])
+            if y in settings['limits']:
+                ax.set_ylim(settings['limits'][y])
+            if x in settings['limits']:
+                ax.set_xlim(settings['limits'][x])
         
     
     # Add colorbar
     color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
-    plt.colorbar(color, cax = color_ax).set_label(label=settings[c_var]['label'],size=fontsize)
+    plt.colorbar(color, cax = color_ax).set_label(label=settings['label'][c_var],size=fontsize)
     
     if save:
         if savefile is None:
             savefile = "VS"
             for x in x_vars:
-                savefile = x+"_"+savefile if 'abbrv' not in settings[x] else settings[x]['abbrv']+"_"+savefile
+                savefile = x+"_"+savefile if x not in settings['abbrv'] else settings['abbrv'][x]+"_"+savefile
             for y in y_vars:
-                savefile = savefile+"_"+y if 'abbrv' not in settings[y] else savefile+"_"+settings[y]['abbrv']
+                savefile = savefile+"_"+y if y not in settings['abbrv'] else savefile+"_"+settings['abbrv'][y]
             savefile += ".png"
         
         plt.savefig(plot_dir+savefile, bbox_inches='tight')
