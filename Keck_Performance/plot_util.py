@@ -10,8 +10,9 @@ plot_dir = "/u/emily_ramey/work/Keck_Performance/plots/data_on_data/"
 
 default_settings = {
     'label': {
-        'mass': 'MASS',
-        'dimm': 'DIMM',
+        'mass': 'MASS [as]',
+        'dimm': 'DIMM [as]',
+        'masspro': 'MASSPRO [as]',
         'wind_speed': 'Wind Speed [kts]',
         'wind_direction': 'Wind Direction',
         'temperature': 'Temperature [C]',
@@ -72,7 +73,7 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
     # Set labels to variables if not passed
     settings = settings.copy()
     for var in x_vars+y_vars+[c_var]:
-        if var not in settings:
+        if var not in settings['label']:
             settings['label'].update({var: var})
             
     for i,y in enumerate(y_vars):
