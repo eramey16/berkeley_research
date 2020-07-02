@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 
-plot_dir = "/u/emily_ramey/work/Keck_Performance/plots/data_on_data/"
+plot_dir = "plots/"
 
 default_settings = {
     'label': {
@@ -118,7 +118,7 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
                 savefile = savefile+"_"+y if y not in settings['abbrv'] else savefile+"_"+settings['abbrv'][y]
             savefile += ".png"
         
-        plt.savefig(plot_dir+savefile, bbox_inches='tight')
+        plt.savefig(plot_dir+"data_on_data/"+savefile, bbox_inches='tight')
         
     
     plt.show()
