@@ -32,7 +32,7 @@ verbose = True
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 strehl_cols = ['file', 'strehl', 'rms_err', 'fwhm', 'mjd']
 nirc2_fields = ['AIRMASS', 'ITIME', 'COADDS', 'FWINAME', 'AZ', 'DMGAIN', 'DTGAIN', 'XREF', 'YREF', 
-               'XSTREHL', 'YSTREHL', 'WSFRRT', 'AOLBFWHM', 'LSAMPPWR', 'LGRMSWF']
+               'XSTREHL', 'YSTREHL', 'WSFRRT', 'AOLBFWHM', 'LSAMPPWR', 'LGRMSWF', 'AOAOAMED', 'TUBETEMP']
 ### Types of seeing files
 s_types = ['mass', 'dimm', 'masspro']
 ### Seeing file headers

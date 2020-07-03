@@ -26,7 +26,7 @@ default_settings = {
         'lgrmswf': 'RMS WF Residual [nm]',
         'aolbfwhm': 'LB-FWHM [as]',
         'lsamppwr': 'Laser Power [W]',
-        'aoaomed': 'AO Camera Light [counts]',
+        'aoaoamed': 'Median Subaperture Light [DN]',
         'wsfrrt': 'WFS Frame Rate',
         'dmgain': 'Target CB gain',
         'dtgain': 'Tip-Tilt Loop Gain',
@@ -122,3 +122,73 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
         
     
     plt.show()
+    return
+
+
+
+def plot_lenslets(tel_data, lnum, shape=None, xlim={}, ylim={}, 
+                  fontsize=10, figsize=None, save=False):
+    """
+    Plots centroid offset of a lenslet in the tel_data array
+    lnum: integer, subaperture index from 0 to 304
+    """
+    # Check on values passed
+    if type(lnum) is int:
+        lnum = [lnum]
+    if shape is None:
+        shape = (len(lnum), 1)
+    if figsize is None:
+        figsize=(shape[1]*5, shape[0]*5)
+    for num in lnum:
+        if num not in xlim:
+            xlim[num] = (-1.5, 1.5)
+        if num not in ylim:
+            ylim[num] = xlim[num]
+    
+    # subplots
+    fig, axes = plt.subplots(nrows=shape[0], ncols=shape[1], squeeze=False, figsize=figsize)
+    axes = axes.flatten()
+    
+    for i,num in enumerate(lnum):
+        ax = axes[i]
+        
+        # Mean of x and y offset centroids
+        x_offset = tel_data.a.offsetcentroid[0][:, num*2]
+        y_offset = tel_data.a.offsetcentroid[0][:, num*2+1]
+        mx = x_offset.mean()
+        my = y_offset.mean()
+
+        # Std dev of offset centroids (geometric mean of sigx and sigy)
+        sigma = sqrt((x_offset.std())**2 + (y_offset.std())**2)
+
+        # Convert radial coord.s to rectangular
+        theta = np.linspace(0, 2 * pi, 50)
+        x = np.cos(theta)*sigma + mx
+        y = np.sin(theta)*sigma + my
+
+        # Graph
+        offset = ax.scatter(x_offset, y_offset, s = 0.5, c = 'b', label="Centroid offset")
+        circle = ax.scatter(x, y, s = 5, c = 'k', label='$1\sigma$ radius')
+        mean = ax.scatter(mx, my, s = 30, c = 'r', label="Mean offset")
+
+        # Label
+        ax.annotate(f'Subaperture number: {num}', xy=(0.05, 0.95), 
+                     xycoords='axes fraction').set_fontsize(fontsize)
+        ax.set_xlabel('X offset (arcsec)', fontsize=fontsize)
+        if i%shape[0]==0:
+            ax.set_ylabel('Y offset (arcsec)', fontsize=fontsize)
+        
+        if i==0:
+            ax.legend(loc = 'best', fontsize=fontsize)
+
+        ax.set_xlim(xlim[num])
+        ax.set_ylim(ylim[num])
+
+        ax.grid()
+    
+    if save:
+        filename = plot_dir+"telemetry_plots/"+"_".join(map(str, lnum))+"_centroids.png"
+        plt.savefig(filename, bbox_inches='tight')
+    
+    plt.show()
+    return
