@@ -159,10 +159,10 @@ def plot_lenslets(tel_data, lnum, shape=None, xlim={}, ylim={},
         my = y_offset.mean()
 
         # Std dev of offset centroids (geometric mean of sigx and sigy)
-        sigma = sqrt((x_offset.std())**2 + (y_offset.std())**2)
+        sigma = np.sqrt((x_offset.std())**2 + (y_offset.std())**2)
 
         # Convert radial coord.s to rectangular
-        theta = np.linspace(0, 2 * pi, 50)
+        theta = np.linspace(0, 2 * np.pi, 50)
         x = np.cos(theta)*sigma + mx
         y = np.sin(theta)*sigma + my
 

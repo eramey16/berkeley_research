@@ -46,7 +46,7 @@ def runRandomForest(X, y, max_depth, n_estimators, max_features, rand_state):
     
     return map_err
 
-def clean(data):
+def clean(data, dropna=False):
     """
     Filter Steve's telemetry/weather/science data for invalid values:
     Strehl < 0
@@ -55,6 +55,9 @@ def clean(data):
     returns: the filtered array
     """
     data_clean = data.copy()#.dropna()
+    data_clean.columns = [c.lower() for c in data_clean.columns]
+    if dropna:
+        data_clean = data_clean.dropna()
     
     # strehl
     data_clean = data_clean[data_clean['strehl']>0]
@@ -66,7 +69,8 @@ def clean(data):
     data_clean = data_clean[data_clean['wind_direction']>=0]
     
     # RMS WF Residual
-    data_clean = data_clean[data_clean['LGRMSWF']<1500]
+    if 'lgrmswf' in data_clean:
+        data_clean = data_clean[data_clean['lgrmswf']<1500]
     
     return data_clean
 
