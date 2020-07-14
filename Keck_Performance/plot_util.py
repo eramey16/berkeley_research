@@ -21,7 +21,7 @@ default_settings = {
         'fwhm': 'FWHM [mas]',
         'mjd': 'MJD',
         'az': 'Azimuth',
-        'relative_humidity': 'Relative Humidity',
+        'relative_humidity': 'Relative Humidity [%]',
         'airmass': 'Airmass',
         'lgrmswf': 'RMS WF Residual [nm]',
         'aolbfwhm': 'LB-FWHM [as]',
