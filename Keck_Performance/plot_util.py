@@ -40,7 +40,8 @@ default_settings = {
         'wsfrrt': 'WFS Frame Rate',
         'dmgain': 'Target CB gain',
         'dtgain': 'Tip-Tilt Loop Gain',
-        'tubetemp': 'Tube Temperature [C]'
+        'tubetemp': 'Tube Temperature [C]',
+        'dec_year': 'Decimal Year'
     },
     'abbrv': {
         'wind_speed': 'wspeed',
@@ -54,6 +55,7 @@ default_settings = {
         'aolbfwhm': 'lbfw',
         'lsamppwr': 'lpow',
         'aoaomed': 'aocam',
+        'dec_year': 'yr'
     },
     'limits': {
         'strehl': [0, 0.6],
