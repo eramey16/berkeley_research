@@ -5,8 +5,10 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+import matplotlib as mpl
 
 plot_dir = "plots/"
+sub_ap_file = "ao_telemetry/sub_ap_map.txt"
 
 default_settings = {
     'label': {
@@ -192,3 +194,40 @@ def plot_lenslets(tel_data, lnum, shape=None, xlim={}, ylim={},
     
     plt.show()
     return
+
+def plot_array(data, map_file=sub_ap_file, spacing=0.2, start=(0.1,0.1),
+               size=100, cmap = mpl.cm.viridis, figsize=(12, 12), fontsize=18):
+    """ Plots an array of lenslets with the standard deviation of their centroid offsets """
+    # Array of 1s and 0s for lenslet positions in a square grid
+    sub_ap_map = pd.read_csv("ao_telemetry/sub_ap_map.txt", delim_whitespace=True, header=None).to_numpy()
+    len_x = sub_ap_map.shape[0]
+    len_y = sub_ap_map.shape[1]
+    
+    # Make x and y coordinate ranges
+    stop_x = start[0]+len_x*spacing
+    stop_y = start[1]+len_y*spacing
+    x = np.arange(start[0], stop_x, spacing)
+    y = np.arange(start[1], stop_y, spacing)
+    
+    # Make x and y meshgrids based on coordinates and mapping
+    xx, yy = np.meshgrid(x, y)
+    xx = xx*sub_ap_map
+    yy = yy*sub_ap_map
+    # Remove zero values
+    xx = xx[xx!=0]
+    yy = yy[yy!=0]
+    
+    # Find standard deviation of offset centroids
+    x_std = np.std(data.a.offsetcentroid[0][:, range(0, len(xx)*2, 2)], axis=0)
+    y_std = np.std(data.a.offsetcentroid[0][:, range(1, len(yy)*2, 2)], axis=0)
+    std_all = np.sqrt(x_std**2 + y_std**2)
+    
+    # Plot resulting lenslet array
+    fig = plt.figure(figsize = figsize)
+    color = plt.scatter(xx, yy, s = std_all * size, c = std_all, cmap = cmap)
+    for i in range(len(x_std)):
+        plt.text(xx[i], yy[i] - 0.1, i, horizontalalignment='center')
+    # Add colorbar
+    color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
+    plt.colorbar(color, cax = color_ax).set_label(label='Offset Centroid $\sigma$',
+                                                  fontsize=fontsize)

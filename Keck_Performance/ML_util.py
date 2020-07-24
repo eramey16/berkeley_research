@@ -54,7 +54,7 @@ def clean(data, dropna=False):
     negative wind direction
     returns: the filtered array
     """
-    data_clean = data.copy()#.dropna()
+    data_clean = data.copy()
     data_clean.columns = [c.lower() for c in data_clean.columns]
     if dropna:
         data_clean = data_clean.dropna()
