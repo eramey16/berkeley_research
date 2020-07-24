@@ -89,7 +89,6 @@ def mjd_to_ds(mjd_list):
     dateStrings = [f"{d.year}{fmt(d.month)}{fmt(d.day)}" for d in dates]
     return dateStrings
 
-
 def hst_to_utc(date):
     """
     Returns the Universal Coordinated Time calculated from Hawaii Standard Time
@@ -100,7 +99,7 @@ def hst_to_utc(date):
 
 def hst_to_mjd(daterow):
     """
-    Returns the Modified Julian Time calculated from HST
+    Returns the Modified Julian Date calculated from HST
     """
     row = [int(num) for num in daterow]
     if len(daterow) == 6:
