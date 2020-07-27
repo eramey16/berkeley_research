@@ -67,15 +67,21 @@ default_figsize = (20, 10)
 default_fontsize = 12
 
 ### Grid plotting function
-def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
-              figsize=default_figsize, fontsize=default_fontsize, cmap='viridis',
-              save=False, filename=None
-             ):
+def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
+              figsize=default_figsize, fontsize=default_fontsize, cmap='viridis', 
+              corner=False, save=False, filename=None):
     """
     Plots each x-variable against each y-variable in a grid
     c_var is a variable that describes the colorbar, if specified
     labels are specified in a label dictionary, or the default above is used
     """
+    if corner: # All labels passed at once
+        y_vars = x_vars[1:]
+        x_vars = x_vars[:-1]
+    elif y_vars is None:
+        print("No y-variables specified")
+        return
+    
     x_len = len(x_vars)
     y_len = len(y_vars)
     # Figure setup
@@ -95,6 +101,10 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
             else:
                 ax = axes[i, j]
             
+            if corner and j>i: # Above diagonal
+                ax.axis('off')
+                continue
+            
             # Y labels and axes
             if j==0: # left axis
                 ax.set_ylabel(settings['label'][y], fontsize=fontsize)
@@ -107,34 +117,39 @@ def plot_vars(data, x_vars, y_vars, c_var=None, settings=default_settings,
             else: # other axes
                 ax.set_xticks([])
             
-            #ax.annotate(f'i:{i},j:{j}', xy=(.45, .45), xycoords='axes fraction').set_fontsize(20)
+#             ax.annotate(f'i:{i},j:{j}', xy=(.45, .45), xycoords='axes fraction').set_fontsize(20)
             color = ax.scatter(data[x], data[y], s=1, 
-                              c=None if c_var is None else data[c_var], cmap=cmap)
+                              c='black' if c_var is None else data[c_var], cmap=cmap)
+            
             # Set limits
-            if y in settings['limits']:
-                ax.set_ylim(settings['limits'][y])
             if x in settings['limits']:
                 ax.set_xlim(settings['limits'][x])
+            if y in settings['limits']:
+                ax.set_ylim(settings['limits'][y])
+            if corner: # Assuming we want a diagonal on corner plots
+                x1, x2 = ax.get_xlim()
+                diag = np.linspace(x1,x2,1000)
+                ax.plot(diag, diag, 'k--')
         
     
-    # Add colorbar
-    color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
-    plt.colorbar(color, cax = color_ax).set_label(label=settings['label'][c_var],size=fontsize)
+    if c_var is not None:# Add colorbar
+        color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
+        plt.colorbar(color, cax = color_ax).set_label(label=settings['label'][c_var],size=fontsize)
     
     if save:
         if filename is None:
-            filename = "VS"
-            for x in x_vars:
-                filename = x+"_"+filename if x not in settings['abbrv'] else settings['abbrv'][x]+"_"+filename
-            for y in y_vars:
-                filename = filename+"_"+y if y not in settings['abbrv'] else filename+"_"+settings['abbrv'][y]
+            x_names = [x if x not in settings['abbrv'] else settings['abbrv'][x] for x in x_vars]
+            y_names = [y if y not in settings['abbrv'] else settings['abbrv'][y] for y in y_vars]
+            if corner:
+                filename = "corner_"+"_".join([x_names[0]]+y_names)
+            else:
+                filename = "_".join(x_names)+"_VS_"+"_".join(y_names)
             filename += ".png"
         
-        plt.savefig(weather_plots+filename, bbox_inches='tight')
+        save_dir = tel_plots if corner else weather_plots
+        plt.savefig(save_dir+filename, bbox_inches='tight')
         
-    
     plt.show()
-    return
 
 
 
@@ -205,7 +220,6 @@ def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={},
         plt.savefig(filename, bbox_inches='tight')
     
     plt.show()
-    return
 
 def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spacing=0.2,
                start=(0.1,0.1), sig_clip=None, size=100, cmap = cm.viridis, 
@@ -313,7 +327,8 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
     plt.show()
 
 
-def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, save=False):
+def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, cax=[.91, .125, 0.02, 0.755],
+                       save=False, filename=None):
     fig, ax = plt.subplots(figsize=figsize)
     if labels is None:
         labels = data.columns
@@ -323,13 +338,16 @@ def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fon
     ticks = np.array(range(len(labels)))-0.01
     ax.set_xticks(ticks)
     ax.set_yticks(ticks)
-    ax.set_xticklabels(labels,fontsize=fontsize,rotation=70)
+    ax.set_xticklabels(labels,fontsize=fontsize,rotation=65)
     ax.set_yticklabels(labels,fontsize=fontsize)
     
     # Add colorbar
-    color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
+    color_ax = fig.add_axes(cax)
     plt.colorbar(color, cax = color_ax).set_label("Correlation strength",size=fontsize)
     
     if save:
-        plt.savefig(weather_plots+'correlation.png', bbox_inches='tight')
+        if filename is None:
+            print("No filename specified")
+        else:
+            plt.savefig(weather_plots+filename, bbox_inches='tight')
     plt.show()
