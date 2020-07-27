@@ -5,7 +5,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import matplotlib as mpl
+from matplotlib import cm
 from scipy.io import readsav
 from astropy.stats import sigma_clip
 import os
@@ -208,7 +208,7 @@ def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={},
     return
 
 def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spacing=0.2,
-               start=(0.1,0.1), sig_clip=None, size=100, cmap = mpl.cm.viridis, 
+               start=(0.1,0.1), sig_clip=None, size=100, cmap = cm.viridis, 
                figsize=(10, 10), fontsize=18, save=False, filename=None):
     """ Plots an array of lenslets with the standard deviation of their centroid offsets """
     data = readsav(data_file)
@@ -274,18 +274,24 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
             rgba_colors = rgba_colors
             rgba_colors[:,3] = q
             # Plot
-            label = f"points>{sig}$\sigma$" if i==len(sig_clip)-1 else f"points<{sig_clip[i+1]}$\sigma$"
+            label = f">{sig}$\sigma$" if i==len(sig_clip)-1 else f"points<{sig_clip[i+1]}$\sigma$"
             plt.scatter(xx, yy, s=std_all*size, c=rgba_colors, label=label)
         # Legend
         leg = plt.legend()
         [leg.legendHandles[i+1].set_color(bad_colors[start+i]) for i in range(len(bad_colors)-start)]
     
-    # Add text
+    # Add overall mean & std
+    # Is this an ok way to calculate the mean & std? What exactly do we want?
+    mean = np.mean(data)
+    std = np.std(data)
+    plt.annotate(f"Mean={np.format_float_scientific(mean, precision=3)}\n$\sigma$={np.format_float_scientific(std, precision=2)}",
+                 xy=(.05,.05), xycoords='axes fraction')
+    # Add lenslet labels
     textoffset = 0.1 if data_type=="offset centroid" else 4
     for i in range(len(xx)):
         plt.text(xx[i], yy[i] - textoffset, i, horizontalalignment='center')
-    plt.xlabel("X Coordinate", fontsize=fontsize)
-    plt.ylabel("Y Coordinate", fontsize=fontsize)
+    plt.xlabel("X Coordinate [mm]", fontsize=fontsize)
+    plt.ylabel("Y Coordinate [mm]", fontsize=fontsize)
     
     if sig_clip is None:
         # Add colorbar
@@ -304,3 +310,26 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
             filename+=".png"
         filename = tel_plots+filename
         plt.savefig(filename, bbox_inches='tight')
+    plt.show()
+
+
+def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, save=False):
+    fig, ax = plt.subplots(figsize=figsize)
+    if labels is None:
+        labels = data.columns
+    # Plot
+    color = ax.imshow(data[labels].corr(), interpolation="nearest", cmap=cmap, vmin = -1)
+    ax.grid(True)
+    ticks = np.array(range(len(labels)))-0.01
+    ax.set_xticks(ticks)
+    ax.set_yticks(ticks)
+    ax.set_xticklabels(labels,fontsize=fontsize,rotation=70)
+    ax.set_yticklabels(labels,fontsize=fontsize)
+    
+    # Add colorbar
+    color_ax = fig.add_axes([.91, .125, 0.02, 0.755])
+    plt.colorbar(color, cax = color_ax).set_label("Correlation strength",size=fontsize)
+    
+    if save:
+        plt.savefig(weather_plots+'correlation.png', bbox_inches='tight')
+    plt.show()
