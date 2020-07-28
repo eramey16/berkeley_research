@@ -33,7 +33,7 @@ default_settings = {
         'az': 'Azimuth',
         'relative_humidity': 'Relative Humidity [%]',
         'airmass': 'Airmass',
-        'lgrmswf': 'RMS WF Residual (NIRC2 header) [nm]',
+        'lgrmswf': 'RMS WF Residual (NIRC2 Header) [nm]',
         'aolbfwhm': 'LB-FWHM [as]',
         'lsamppwr': 'Laser Power [W]',
         'aoaoamed': 'Median Subaperture Light [DN]',
@@ -42,8 +42,9 @@ default_settings = {
         'dtgain': 'Tip-Tilt Loop Gain',
         'tubetemp': 'Tube Temperature [C]',
         'dec_year': 'Decimal Year',
-        'rms_err': 'RMS WF Residual (Science) [nm]',
-        'residual_rms': 'RMS WF Residual (Telemetry) [nm]'
+        'rms_err': 'RMS WF Residual (NIRC2 Image) [nm]',
+        'residual_rms': 'RMS WF Residual (Telemetry) [nm]',
+        'residual_rms_std': '$\sigma_{rms}$ (Telemetry) [nm]'
     },
     'abbrv': {
         'wind_speed': 'wspeed',
@@ -61,11 +62,12 @@ default_settings = {
         'residual_rms': 'tel-rms'
     },
     'limits': {
-        'strehl': [0, 0.6],
-        'fwhm': [45, 125],
-        'residual_rms': [0, 700],
-        'lgrmswf': [0, 700],
-        'residual_rms_std': [0, 500]
+        'strehl': [0, 0.5],
+        'fwhm': [40, 140],
+        'residual_rms': [0, 600],
+        'rms_err': [0, 600],
+        'lgrmswf': [0, 600],
+        'residual_rms_std': [0, 40]
     }
 }
 
@@ -73,51 +75,69 @@ default_figsize = (20, 10)
 default_fontsize = 12
 
 ### Grid plotting function
-def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
-              figsize=default_figsize, fontsize=default_fontsize, cmap='viridis', 
-              corner=False, diag=True, save=False, filename=None):
+def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None, 
+              settings=default_settings, figsize=default_figsize, fontsize=default_fontsize, 
+              cmap='viridis', fmt='grid', diag=False, save=False, filename=None):
     """
     Plots each x-variable against each y-variable in a grid
     c_var is a variable that describes the colorbar, if specified
     labels are specified in a label dictionary, or the default above is used
     """
-    if corner: # All labels passed at once
+    if fmt=='corner': # All labels passed at once
         y_vars = x_vars[1:]
         x_vars = x_vars[:-1]
     elif y_vars is None:
         print("No y-variables specified")
         return
     
+    if fmt=='box':
+        bg_color = 'k'
+        pt_color = 'w'
+        pt_size = 20
+    else:
+        bg_color = 'w'
+        pt_color = 'k'
+        pt_size = 2
+    
     x_len = len(x_vars)
     y_len = len(y_vars)
     
     if diag is True:
-        diag = np.ones((y_len, x_len), dtype=bool)
+        diag_x = [True]*x_len
+        diag_y = [True]*y_len
     elif diag is False:
-        diag = np.zeros((y_len, x_len), dtype=bool)
-    else: # Figure out how to get array from list multiplication
-        pass
+        diag_x = [False]*x_len
+        diag_y = [False]*y_len
+    else: # Separate x and y diagonals
+        diag_x = diag[:-1]
+        diag_y = diag[1:]
     
     # Figure setup
-    fig, axes = plt.subplots(y_len, x_len, figsize=figsize)
-    plt.subplots_adjust(hspace = 0.01, wspace = 0.01)
+    fig, axes = plt.subplots(y_len, x_len, figsize=figsize, squeeze=False)
+    plt.subplots_adjust(hspace = 0.02, wspace = 0.01)
     
     # Set labels to variables if not passed
     settings = settings.copy()
     for var in x_vars+y_vars+[c_var]:
         if var not in settings['label']:
             settings['label'].update({var: var})
+    
+    # Set color limits
+    c_lim = [None,None] if c_var not in settings['limits'] else settings['limits'][c_var]
+    vmin, vmax = c_lim
             
     for i,y in enumerate(y_vars):
         for j,x in enumerate(x_vars):
-            if x_len==1 and y_len==1:
-                ax = axes
-            else:
-                ax = axes[i, j]
+            # Plot axis
+            ax = axes[i, j]
+            # Background color
+            ax.set_facecolor(bg_color)
             
-            if corner and j>i: # Above diagonal
+            if fmt=='corner' and j>i: # Above diagonal
                 ax.axis('off')
                 continue
+            elif fmt=='box': # Grid
+                ax.xaxis.grid(True, which='major')
             
             # Y labels and axes
             if j==0: # left axis
@@ -125,22 +145,41 @@ def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
             if j!=0: # other axes
                 ax.set_yticks([])
             
+            
             # X labels and axes
             if i==y_len-1: # bottom axis
                 ax.set_xlabel(settings['label'][x], fontsize=fontsize)
             else: # other axes
-                ax.set_xticks([])
+                ax.set_xticklabels([])
             
 #             ax.annotate(f'i:{i},j:{j}', xy=(.45, .45), xycoords='axes fraction').set_fontsize(20)
-            color = ax.scatter(data[x], data[y], s=1, 
-                              c='black' if c_var is None else data[c_var], cmap=cmap)
+            
+            # Plot errorbars (if any)
+            if x_err is not None:
+                err_data = data[x_err[j]]
+                ax.errorbar(data[x], data[y], xerr=err_data, ecolor=pt_color, 
+                            fmt='none', capsize=2, elinewidth = 0.5, zorder=0)
+            if y_err is not None:
+                err_data = data[y_err[i]]
+                ax.errorbar(data[x], data[y], yerr=err_data, ecolor=pt_color, 
+                            fmt='none', capsize=2, elinewidth = 1, zorder=0)
+            
+            # Plot data
+            color = ax.scatter(data[x], data[y], s=pt_size, c=pt_color if c_var is None else data[c_var],
+                               cmap=cmap, vmin=vmin, vmax=vmax, alpha=1, zorder=1)
+            # NaN data in red
+            if c_var is not None and np.isnan(data[c_var]).any():
+                nan_data = data[np.isnan(data[c_var])]
+                ax.scatter(nan_data[x], nan_data[y], s=pt_size, c='gray', alpha=1, zorder=2)
             
             # Set limits
             if x in settings['limits']:
                 ax.set_xlim(settings['limits'][x])
             if y in settings['limits']:
                 ax.set_ylim(settings['limits'][y])
-            if corner: # Assuming we want a diagonal on corner plots
+            
+            # Set diagonals
+            if diag_y[i] and diag_x[j]:
                 x1, x2 = ax.get_xlim()
                 diag = np.linspace(x1,x2,1000)
                 ax.plot(diag, diag, 'k--')
@@ -154,13 +193,13 @@ def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
         if filename is None:
             x_names = [x if x not in settings['abbrv'] else settings['abbrv'][x] for x in x_vars]
             y_names = [y if y not in settings['abbrv'] else settings['abbrv'][y] for y in y_vars]
-            if corner:
+            if fmt=='corner':
                 filename = "corner_"+"_".join([x_names[0]]+y_names)
             else:
                 filename = "_".join(x_names)+"_VS_"+"_".join(y_names)
             filename += ".png"
         
-        save_dir = tel_plots if corner else weather_plots
+        save_dir = tel_plots if fmt=='corner' else weather_plots
         plt.savefig(save_dir+filename, bbox_inches='tight')
         
     plt.show()
