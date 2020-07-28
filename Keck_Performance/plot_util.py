@@ -33,7 +33,7 @@ default_settings = {
         'az': 'Azimuth',
         'relative_humidity': 'Relative Humidity [%]',
         'airmass': 'Airmass',
-        'lgrmswf': 'RMS WF Residual [nm]',
+        'lgrmswf': 'RMS WF Residual (NIRC2 header) [nm]',
         'aolbfwhm': 'LB-FWHM [as]',
         'lsamppwr': 'Laser Power [W]',
         'aoaoamed': 'Median Subaperture Light [DN]',
@@ -41,7 +41,9 @@ default_settings = {
         'dmgain': 'Target CB gain',
         'dtgain': 'Tip-Tilt Loop Gain',
         'tubetemp': 'Tube Temperature [C]',
-        'dec_year': 'Decimal Year'
+        'dec_year': 'Decimal Year',
+        'rms_err': 'RMS WF Residual (Science) [nm]',
+        'residual_rms': 'RMS WF Residual (Telemetry) [nm]'
     },
     'abbrv': {
         'wind_speed': 'wspeed',
@@ -51,15 +53,19 @@ default_settings = {
         'relative_humidity': 'hum',
         'airmass': 'am',
         'wind_direction': 'wdir',
-        'lgrmswf': 'rms-resid',
+        'lgrmswf': 'wf-sci',
         'aolbfwhm': 'lbfw',
         'lsamppwr': 'lpow',
         'aoaomed': 'aocam',
-        'dec_year': 'yr'
+        'dec_year': 'yr',
+        'residual_rms': 'tel-rms'
     },
     'limits': {
         'strehl': [0, 0.6],
         'fwhm': [45, 125],
+        'residual_rms': [0, 700],
+        'lgrmswf': [0, 700],
+        'residual_rms_std': [0, 500]
     }
 }
 
@@ -69,7 +75,7 @@ default_fontsize = 12
 ### Grid plotting function
 def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
               figsize=default_figsize, fontsize=default_fontsize, cmap='viridis', 
-              corner=False, save=False, filename=None):
+              corner=False, diag=True, save=False, filename=None):
     """
     Plots each x-variable against each y-variable in a grid
     c_var is a variable that describes the colorbar, if specified
@@ -84,6 +90,14 @@ def plot_vars(data, x_vars, y_vars=None, c_var=None, settings=default_settings,
     
     x_len = len(x_vars)
     y_len = len(y_vars)
+    
+    if diag is True:
+        diag = np.ones((y_len, x_len), dtype=bool)
+    elif diag is False:
+        diag = np.zeros((y_len, x_len), dtype=bool)
+    else: # Figure out how to get array from list multiplication
+        pass
+    
     # Figure setup
     fig, axes = plt.subplots(y_len, x_len, figsize=figsize)
     plt.subplots_adjust(hspace = 0.01, wspace = 0.01)
@@ -276,7 +290,7 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
     else:
         sig_clip = np.sort(sig_clip)
         # Plot
-        plt.scatter(xx, yy, s=std_all*size, c=good_color, label=f"points < {sig_clip[0]}$\sigma$")
+        plt.scatter(xx, yy, s=std_all*size, c=good_color, label=f"< {sig_clip[0]}$\sigma$")
         
         start = len(bad_colors)-len(sig_clip)
         for i,sig in enumerate(sig_clip):
@@ -288,7 +302,7 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
             rgba_colors = rgba_colors
             rgba_colors[:,3] = q
             # Plot
-            label = f">{sig}$\sigma$" if i==len(sig_clip)-1 else f"points<{sig_clip[i+1]}$\sigma$"
+            label = f"> {sig}$\sigma$" if i==len(sig_clip)-1 else f"< {sig_clip[i+1]}$\sigma$"
             plt.scatter(xx, yy, s=std_all*size, c=rgba_colors, label=label)
         # Legend
         leg = plt.legend()
@@ -306,6 +320,11 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
         plt.text(xx[i], yy[i] - textoffset, i, horizontalalignment='center')
     plt.xlabel("X Coordinate [mm]", fontsize=fontsize)
     plt.ylabel("Y Coordinate [mm]", fontsize=fontsize)
+    file_list = data_file.split("/")
+    file_date = file_list[5]
+    title = " ".join([x.capitalize() for x in data_type.split(" ")])+"s for "
+    title += file_date[4:6]+"/"+file_date[6:]+"/"+file_date[:4]
+    plt.title(title, fontsize=fontsize)
     
     if sig_clip is None:
         # Add colorbar
@@ -314,8 +333,7 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
                                                   fontsize=fontsize)
     if save:
         if not filename:
-            filename = data_file.split("/")
-            filename = filename[5]+"_"+filename[-1].split(".")[0].split("_")[0]
+            filename = file_list[5]+"_"+file_list[-1].split(".")[0].split("_")[0]
             filename += "_"+data_type.split(" ")[0]+"_std"
             if sig_clip is not None:
                 filename+="_sig"
