@@ -34,7 +34,7 @@ default_settings = {
         'az': 'Azimuth',
         'relative_humidity': 'Relative Humidity [%]',
         'airmass': 'Airmass',
-        'lgrmswf': 'RMS WF Residual (NIRC2 Header) [nm]',
+        'lgrmswf': 'RMS WF Residual [nm]',
         'aolbfwhm': 'LB-FWHM [as]',
         'lsamppwr': 'Laser Power [W]',
         'aoaoamed': 'Median Subaperture Light [DN]',
