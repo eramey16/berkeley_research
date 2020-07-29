@@ -10,10 +10,11 @@ from scipy.io import readsav
 from astropy.stats import sigma_clip
 import os
 
-plot_dir = "plots/"
-tel_plots = plot_dir+"telemetry_plots/"
-weather_plots = plot_dir+"data_on_data/"
+plot_dir = "../../Fall_2020_Paper/figures/"
 sub_ap_file = "ao_telemetry/sub_ap_map.txt"
+
+section = "Observations"
+plot_type = "telemetry"
 
 good_color = 'blue'
 bad_colors = [(1,1,0), (1,128/255.0,0), (1,0,0)]
@@ -73,6 +74,17 @@ default_settings = {
 
 default_figsize = (20, 10)
 default_fontsize = 12
+
+def setup(sec, p_type):
+    """ Sets the global section variable """
+    global section
+    global plot_type
+    section = sec
+    plot_type = p_type
+
+def savefig(fig, filename):
+    path = f"{plot_dir}{section}/{plot_type}_{filename}"
+    plt.savefig(path, bbox_inches='tight')
 
 ### Grid plotting function
 def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None, 
@@ -199,8 +211,7 @@ def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None,
                 filename = "_".join(x_names)+"_VS_"+"_".join(y_names)
             filename += ".png"
         
-        save_dir = tel_plots if fmt=='corner' else weather_plots
-        plt.savefig(save_dir+filename, bbox_inches='tight')
+        savefig(fig, filename)
         
     plt.show()
 
@@ -269,22 +280,27 @@ def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={},
         ax.grid()
     
     if save:
-        filename = tel_plots+"_".join(map(str, lnum))+"_centroids.png"
-        plt.savefig(filename, bbox_inches='tight')
+        filename = "_".join(map(str, lnum))+"_centroids.png"
+        savefig(fig, filename)
     
     plt.show()
 
-def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spacing=0.2,
-               start=(0.1,0.1), sig_clip=None, size=100, cmap = cm.viridis, 
+def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file,
+               start=(0.1,0.1), sig_clip=None, size=200, cmap = cm.viridis, 
                figsize=(10, 10), fontsize=18, save=False, filename=None):
     """ Plots an array of lenslets with the standard deviation of their centroid offsets """
     data = readsav(data_file)
     if data_type=="offset centroid":
         data = data.a.offsetcentroid[0]
         clabel = "Offset Centroid $\sigma$"
+        spacing = 0.2
     elif data_type=="residual wavefront":
         data = data.a.residualwavefront[0]
         clabel = "Deformable Mirror $\sigma$ [volt]"
+        spacing = 7
+    else:
+        print("Unrecognized lenslet array")
+        return
     
     if sig_clip is not None and type(sig_clip) is float:
         sig_clip = [sig_clip]
@@ -353,8 +369,9 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
     std = np.std(data)
     plt.annotate(f"Mean={np.format_float_scientific(mean, precision=3)}\n$\sigma$={np.format_float_scientific(std, precision=2)}",
                  xy=(.05,.05), xycoords='axes fraction')
+    
     # Add lenslet labels
-    textoffset = 0.1 if data_type=="offset centroid" else 4
+    textoffset = 0.12 if data_type=="offset centroid" else 4
     for i in range(len(xx)):
         plt.text(xx[i], yy[i] - textoffset, i, horizontalalignment='center')
     plt.xlabel("X Coordinate [mm]", fontsize=fontsize)
@@ -379,8 +396,7 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file, spa
                 for sig in sig_clip:
                     filename+="_"+str(np.round(float(sig), 2)).replace(".", "_")
             filename+=".png"
-        filename = tel_plots+filename
-        plt.savefig(filename, bbox_inches='tight')
+        savefig(fig, filename)
     plt.show()
 
 
@@ -406,5 +422,5 @@ def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fon
         if filename is None:
             print("No filename specified")
         else:
-            plt.savefig(weather_plots+filename, bbox_inches='tight')
+            savefig(fig, filename)
     plt.show()
