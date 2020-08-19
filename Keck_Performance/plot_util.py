@@ -43,7 +43,7 @@ default_settings = {
         'dtgain': 'Tip-Tilt Loop Gain',
         'tubetemp': 'Tube Temperature [C]',
         'dec_year': 'Decimal Year',
-        'rms_err': 'RMS WF Residual (NIRC2 Image) [nm]',
+        'rms_err': 'RMS WF Residual (NIRC2 Strehl) [nm]',
         'residual_rms': 'RMS WF Residual (Telemetry) [nm]',
         'residual_rms_std': '$\sigma_{rms}$ (Telemetry) [nm]'
     },
@@ -72,7 +72,7 @@ default_settings = {
     }
 }
 
-default_figsize = (20, 10)
+default_figsize = (15, 7.5)
 default_fontsize = 12
 
 def setup(sec, p_type):
@@ -103,8 +103,8 @@ def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None,
         return
     
     if fmt=='box':
-        bg_color = 'k'
-        pt_color = 'w'
+        bg_color = 'w'
+        pt_color = 'k'
         pt_size = 20
     else:
         bg_color = 'w'
@@ -126,7 +126,7 @@ def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None,
     
     # Figure setup
     fig, axes = plt.subplots(y_len, x_len, figsize=figsize, squeeze=False)
-    plt.subplots_adjust(hspace = 0.02, wspace = 0.01)
+    plt.subplots_adjust(hspace = 0.04, wspace = 0.03)
     
     # Set labels to variables if not passed
     settings = settings.copy()
