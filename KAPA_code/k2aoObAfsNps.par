@@ -1,0 +1,44 @@
+# $Id$
+#
+# named positions for device k2:ao:ob:afs:name:
+# saved by k2obsao@k2aoserver on Fri Jul 24 02:34:47 2020 UTC
+
+# clear out existing definitions
+long k2:ao:ob:afs:name:resCmd = 1;
+
+group {
+    string k2:ao:ob:afs:name:control.A = "ngs";
+    double k2:ao:ob:afs:name:control.B = 0.115003;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
+group {
+    string k2:ao:ob:afs:name:control.A = "home";
+    double k2:ao:ob:afs:name:control.B = 0.045;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
+group {
+    string k2:ao:ob:afs:name:control.A = "video";
+    double k2:ao:ob:afs:name:control.B = 0.128004;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
+group {
+    string k2:ao:ob:afs:name:control.A = "ngs_hires";
+    double k2:ao:ob:afs:name:control.B = 0.137499;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
+group {
+    string k2:ao:ob:afs:name:control.A = "ngs_PD";
+    double k2:ao:ob:afs:name:control.B = 0.138495;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
+group {
+    string k2:ao:ob:afs:name:control.A = "ngs-if";
+    double k2:ao:ob:afs:name:control.B = 0.135233;
+    long   k2:ao:ob:afs:name:defCmd = 1;
+}
+
