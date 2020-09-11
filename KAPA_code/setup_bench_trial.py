@@ -9,7 +9,7 @@ import sys
 import time
 import enum
 import yaml
-from transitions import Machine
+from transitions import Machine, State
 import epics
 
 parfile = "aoopsmodes.yaml" # Parameter file for AOOPSMode data
@@ -25,27 +25,65 @@ def read_aoopsmodes(parfile):
         aoopsmode_data = yaml.load(f, Loader=yaml.FullLoader)
         return aoopsmode_data
 
+#######################################
+########## State functions ############
+#######################################
+
+def run_verify():
+    # Check if TT and DM AO loops are open
+    # Check if star magnitude is valid
+    pass
+
+def run_read():
+    # Get observing mode
+    # if LGS, get laser sub-mode
+    # Get hyper mode
+    # Get BS/Dichroic settings
+    # Get target name
+    # This needs more to be its own state
+    pass
+
+def run_prepare():
+    # Open all AO loops
+    # Turn on TRS
+    # Open WYKO shutter
+    # Set NIRC2 target name keyword
+    # Reset LBWFS decount and LBWFS RMS WF error keywords
+    # Copy FSM origin file appropriate for the observing mode
+    pass
+
+def run_set():
+    # If LGS and 'LASER ZENITH', set AO rotator to a specific angle
+    # Configure the focus manager
+    # Set the FCS mode (tracking or manual) depending on the configuration
+    # Set the SOD FCS to offset keyword or 'zero' in simulate mode (revisit this)
+    # Set the WPS mode per configuration and set obwpname to 'ngs' for NGS mode
+    # Set DAR parameters, including guidestar wavelength
+    # Set TSS gold numbers (maybe only for LGS mode?)
+    # Set AO bench params for observing mode
+    pass
+
+def run_move():
+    # Move the SOD, AFS, and AFM stages
+    pass
+
+def run_configure():
+    # Only for Trick mode?
+    pass
+
 ### Setup bench modes
 @enum.unique
 class SystemStates(enum.Enum):
+    IDLE = "Idle mode"
+    VERIFYING = "Verifying system state"
+    READING = "Reading AO parameters"
+    PREPARING = "Preparing to run setup bench"
+    SETTING = "Setting AO Parameters"
+    MOVING = "Moving stages"
+    CONFIGURING = "Configuring TRICK"
     
-    __state_vars = {}
-    
-    Verifying = "Verifying system state"
-    Reading = "Reading AO parameters"
-    Preparing = "Preparing to run setup bench"
-    Setting = "Setting AO Parameters"
-    Moving = "Moving stages"
-    Configuring = "Configuring TRICK"
-    
-    def __getitem__(self, key):
-        """ Gets a parameter from setup variables """
-        ### Note: should maybe re-initialize variables upon exiting the state
-        return self.__state_vars[key]
-    
-    def __setitem__(self, key, value):
-        """ Sets a parameter in setup variables """
-        self.__state_vars[key] = value
+    def run(self):
+        print("Running state", self.name)
     
     def __init__(self, value):
         """
@@ -53,11 +91,6 @@ class SystemStates(enum.Enum):
         The integer value is attached by default as <mode>.value
         """
         pass # TODO
-#         modes = read_aoopsmodes(parfile)
-#         if self.name not in modes:
-#             message(f"Error reading par file: {self.name} not defined")
-#             return
-#         self.__state_vars = modes[self.name]
     
 
 ### AO Operation modes, each tied to a specific number
@@ -347,14 +380,38 @@ def update_centroid_gain(data):
 def aoacq_status(data):
     pass # TODO
 
+######################################
+######### State Machine ##############
+######################################
+sys_transitions = [
+    ['next', SystemStates.IDLE, SystemStates.VERIFYING]
+]
+ops_transitions = [
+    ['to_LGS', '*', OPSModes.LGS]
+]
+
 class setup_bench(Machine):
     
     def __init__(self, data):
-        """ Initializes a finite state machine with 'aoopsmode' as the state variable """
-        super().__init__(self, model_attribute='aoopsmode', states=OPSModes, initial=OPSModes.NGS)
+        """ Initializes a finite state machine with 'state' as the state variable """
+        opsmode = OPSModes(self.data['aoopsmode']).name
+        self.ops_machine = Machine(self, model_attribute='aoopsmode', states=OPSModes, 
+                         transitions=ops_transitions, initial=opsmode)
+        self.sys_machine = Machine(self, model_attribute='system_state', states=SystemStates, transitions=sys_transitions,
+                         initial=SystemStates.IDLE)
+        
+        print(self.aoopsmode)
+        print(self.system_state)
+        
         self.data = data
+        
+        # Set up callbacks
+        for name, state in self.sys_machine.states.items():
+            state.on_enter = [state.value.run]
+        self.sys_machine.add_ordered_transitions(trigger='next')
     
     def run(self):
+        return
         """
         Runs the setup bench code detailed in setup_bench.pro with data input by the user
         As I start to make more use of the FSM functionality, code will migrate from here to 
