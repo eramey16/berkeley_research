@@ -1,0 +1,11 @@
+ANN:
+  fwhm:
+    Mean Absolute Error [TEST]: 8.17
+    Mean Absolute Error [TRAIN]: 7.15
+    Mean Absolute Percentage Error [TEST]: 10.49%
+    Mean Absolute Percentage Error [TRAIN]: 9.55%
+  strehl:
+    Mean Absolute Error [TEST]: 0.04
+    Mean Absolute Error [TRAIN]: 0.04
+    Mean Absolute Percentage Error [TEST]: 28.3%
+    Mean Absolute Percentage Error [TRAIN]: 18.5%

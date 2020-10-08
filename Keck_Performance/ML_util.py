@@ -8,6 +8,7 @@ from sklearn.decomposition import PCA
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.metrics import mean_absolute_error
 from sklearn.model_selection import train_test_split
+import process_data as process
 from astropy.table import Table
 import pandas as pd
 import numpy as np
@@ -45,51 +46,6 @@ def runRandomForest(X, y, max_depth, n_estimators, max_features, rand_state):
     map_err = rf_mape
     
     return map_err
-
-def clean(data, dropna=False):
-    """
-    Filter Steve's telemetry/weather/science data for invalid values:
-    Strehl < 0
-    FWHM < 30
-    negative wind direction
-    returns: the filtered array
-    """
-    data_clean = data.copy()
-    data_clean.columns = [c.lower() for c in data_clean.columns]
-    if dropna:
-        data_clean = data_clean.dropna()
-    
-    # strehl
-    data_clean = data_clean[data_clean['strehl']>0]
-    
-    # fwhm
-    data_clean = data_clean[data_clean['fwhm']>30]
-    
-    # wind direction
-    data_clean = data_clean[data_clean['wind_direction']>=0]
-    
-    # RMS WF Residual
-    if 'lgrmswf' in data_clean:
-        data_clean = data_clean[data_clean['lgrmswf']<1500]
-    
-    return data_clean
-
-def read_and_clean(data_file=meta_file):
-    """
-    Read in Steve's telemetry/weather/science data from a fits table and clean it
-    returns: a pandas DataFrame of X and Y data
-    """
-    
-    ### Read info from Steve's metadata files
-    meta_data = Table.read(data_file)
-    meta_data = meta_data.to_pandas() # convert to pandas
-    
-    # extract relevant data
-    meta_data = meta_data[use_cols]
-    # clean data
-    meta_clean = clean(meta_data)
-    
-    return meta_clean
 
 def split_and_scale(X, y):
     """

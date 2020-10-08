@@ -1,0 +1,33 @@
+ANN:
+  fwhm:
+    Mean Absolute Error [TEST]: '270533653172496.97'
+    Mean Absolute Error [TRAIN]: '266298081405144.9'
+    Mean Absolute Percentage Error [TEST]: 432836225869160.3%
+    Mean Absolute Percentage Error [TRAIN]: 424880737383733.44%
+  strehl:
+    Mean Absolute Error [TEST]: '7351876637.82'
+    Mean Absolute Error [TRAIN]: '7073940283.16'
+    Mean Absolute Percentage Error [TEST]: 2850178705019.95%
+    Mean Absolute Percentage Error [TRAIN]: 2736917566999.1%
+RF:
+  fwhm:
+    Mean Absolute Error [TEST]: 4.98
+    Mean Absolute Error [TRAIN]: 1.85
+    Mean Absolute Percentage Error [TEST]: 6.4%
+    Mean Absolute Percentage Error [TRAIN]: 2.38%
+  strehl:
+    Mean Absolute Error [TEST]: 0.03
+    Mean Absolute Error [TRAIN]: 0.01
+    Mean Absolute Percentage Error [TEST]: 11.08%
+    Mean Absolute Percentage Error [TRAIN]: 4.56%
+SVR:
+  fwhm:
+    Mean Absolute Error [TEST]: '9.81'
+    Mean Absolute Error [TRAIN]: '9.54'
+    Mean Absolute Percentage Error [TEST]: 12.25%
+    Mean Absolute Percentage Error [TRAIN]: 12.17%
+  strehl:
+    Mean Absolute Error [TEST]: '0.07'
+    Mean Absolute Error [TRAIN]: '0.06'
+    Mean Absolute Percentage Error [TEST]: 32.71%
+    Mean Absolute Percentage Error [TRAIN]: 30.76%

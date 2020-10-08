@@ -9,9 +9,10 @@ from matplotlib import cm
 from scipy.io import readsav
 from astropy.stats import sigma_clip
 import os
+import copy
 
-plot_dir = "../../Fall_2020_Paper/figures/"
-sub_ap_file = "ao_telemetry/sub_ap_map.txt"
+plot_dir = "../../../Fall_2020_Paper/figures/"
+sub_ap_file = "../ao_telemetry/sub_ap_map.txt"
 
 section = "Observations"
 plot_type = "telemetry"
@@ -43,9 +44,9 @@ default_settings = {
         'dtgain': 'Tip-Tilt Loop Gain',
         'tubetemp': 'Tube Temperature [C]',
         'dec_year': 'Decimal Year',
-        'rms_err': 'RMS WF Residual (NIRC2 Strehl) [nm]',
-        'residual_rms': 'RMS WF Residual (Telemetry) [nm]',
-        'residual_rms_std': '$\sigma_{rms}$ (Telemetry) [nm]'
+        'rms_err': 'RMS WF Resid (strehl) [nm]',
+        'residual_rms': 'RMSWF (Telemetry) [nm]',
+        'residual_rms_std': '$\sigma_{rms}$ (Telemetry) [nm]',
     },
     'abbrv': {
         'wind_speed': 'wspeed',
@@ -60,7 +61,7 @@ default_settings = {
         'lsamppwr': 'lpow',
         'aoaomed': 'aocam',
         'dec_year': 'yr',
-        'residual_rms': 'tel-rms'
+        'residual_rms': 'tel-rms',
     },
     'limits': {
         'strehl': [0, 0.5],
@@ -68,23 +69,57 @@ default_settings = {
         'residual_rms': [0, 600],
         'rms_err': [0, 600],
         'lgrmswf': [0, 600],
-        'residual_rms_std': [0, 40]
+        'residual_rms_std': [0, 40],
     }
 }
 
+# telem_settings = {
+#     'label': default_settings['label'].copy(),
+#     'abbrv': default_settings['abbrv'].copy(),
+#     'limits': default_settings['limits'].copy(),
+# }
+telem_settings = copy.deepcopy(default_settings)
+telem_settings['label'].update({
+    'lgrmswf': 'RMSWF \n(N2 Hdr)',
+    'rms_err': 'RMSWF \n(N2 Strehl)',
+    'residual_rms': 'RMSWF \n(Telem)',
+    'residual_rms_std': '$\sigma_{rms}$ \n(Telem)',
+})
+
 default_figsize = (15, 7.5)
 default_fontsize = 12
+default_fonts = {
+    'labels': default_fontsize,
+    'legend': default_fontsize,
+    'ticks': default_fontsize,
+}
 
 def setup(sec, p_type):
     """ Sets the global section variable """
     global section
     global plot_type
+    
+    path = f"{plot_dir}{section}/"
+    if not os.path.exists(path):
+        print("making path", path)
+        os.mkdir(path)
     section = sec
     plot_type = p_type
 
 def savefig(fig, filename):
     path = f"{plot_dir}{section}/{plot_type}_{filename}"
     plt.savefig(path, bbox_inches='tight')
+
+def get_labels(var_names, settings=default_settings, units=True):
+    """ Gets plot labels for variable names """
+    labels = []
+    for var_name in var_names:
+        label = var_name if var_name not in settings['label'] else settings['label'][var_name]
+        if not units:
+            label = label.split("[")[0].strip()
+        labels.append(label)
+    
+    return labels
 
 ### Grid plotting function
 def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None, 
@@ -218,7 +253,7 @@ def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None,
 
 
 def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={}, 
-                  fontsize=10, figsize=None, save=False):
+                  fontsize=default_fonts, figsize=None, save=False):
     """
     Plots centroid offset of a lenslet in the data array
     lnum: integer, subaperture index from 0 to 304
@@ -237,6 +272,13 @@ def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={},
             xlim[num] = (-1.5, 1.5)
         if num not in ylim:
             ylim[num] = xlim[num]
+    
+    # Update font size
+    fonts = default_fonts.copy()
+    if type(fontsize) is int:
+        fonts = {key: fontsize for key in fonts}
+    else:
+        fonts.update(fontsize)
     
     # subplots
     fig, axes = plt.subplots(nrows=shape[0], ncols=shape[1], squeeze=False, figsize=figsize)
@@ -266,18 +308,19 @@ def plot_lenslets(data_file, lnum, shape=None, xlim={}, ylim={},
 
         # Label
         ax.annotate(f'Subaperture number: {num}', xy=(0.05, 0.95), 
-                     xycoords='axes fraction').set_fontsize(fontsize)
-        ax.set_xlabel('X offset (arcsec)', fontsize=fontsize)
+                     xycoords='axes fraction').set_fontsize(default_fontsize)
+        ax.set_xlabel('X offset (arcsec)', fontsize=fonts['labels'])
         if i%shape[0]==0:
-            ax.set_ylabel('Y offset (arcsec)', fontsize=fontsize)
+            ax.set_ylabel('Y offset (arcsec)', fontsize=fonts['labels'])
         
         if i==0:
-            ax.legend(loc = 'best', fontsize=fontsize)
+            ax.legend(loc = 'best', fontsize=fonts['legend'])
 
         ax.set_xlim(xlim[num])
         ax.set_ylim(ylim[num])
 
         ax.grid()
+        plt.tight_layout()
     
     if save:
         filename = "_".join(map(str, lnum))+"_centroids.png"
@@ -399,14 +442,17 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file,
         savefig(fig, filename)
     plt.show()
 
-
-def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, cax=[.91, .125, 0.02, 0.755],
-                       save=False, filename=None):
+def correlation_matrix(data, var_names=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, cax=[.91, .125, 0.02, 0.755],
+                       settings=default_settings, save=False, filename=None):
     fig, ax = plt.subplots(figsize=figsize)
-    if labels is None:
-        labels = data.columns
+    if var_names is None:
+        var_names = data.columns
+    
+    corr_data = data[var_names]
+    labels = get_labels(var_names, settings, units=False)
+    
     # Plot
-    color = ax.imshow(data[labels].corr(), interpolation="nearest", cmap=cmap, vmin = -1)
+    color = ax.imshow(corr_data.corr(), interpolation="nearest", cmap=cmap, vmin = -1)
     ax.grid(True)
     ticks = np.array(range(len(labels)))-0.01
     ax.set_xticks(ticks)
@@ -416,7 +462,7 @@ def correlation_matrix(data, labels=None, figsize=(10,10), cmap=cm.coolwarm, fon
     
     # Add colorbar
     color_ax = fig.add_axes(cax)
-    plt.colorbar(color, cax = color_ax).set_label("Correlation strength",size=fontsize)
+    plt.colorbar(color, cax = color_ax).set_label("Correlation strength",fontsize=fontsize)
     
     if save:
         if filename is None:
