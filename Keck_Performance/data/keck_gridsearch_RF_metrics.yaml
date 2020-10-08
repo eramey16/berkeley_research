@@ -1,0 +1,71 @@
+RF:
+  fwhm:
+    Mean Absolute Error [TEST]: 5.39
+    Mean Absolute Error [TRAIN]: 1.97
+    Mean Absolute Percentage Error [TEST]: 6.5%
+    Mean Absolute Percentage Error [TRAIN]: 2.47%
+  strehl:
+    Mean Absolute Error [TEST]: 0.03
+    Mean Absolute Error [TRAIN]: 0.01
+    Mean Absolute Percentage Error [TEST]: 17.28%
+    Mean Absolute Percentage Error [TRAIN]: 4.48%
+settings:
+  max_depth: !!python/object/apply:numpy.core.multiarray._reconstruct
+    args:
+    - &id001 !!python/name:numpy.ndarray ''
+    - !!python/tuple
+      - 0
+    - !!binary |
+      Yg==
+    state: !!python/tuple
+    - 1
+    - !!python/tuple
+      - 5
+    - &id002 !!python/object/apply:numpy.dtype
+      args:
+      - i8
+      - 0
+      - 1
+      state: !!python/tuple
+      - 3
+      - <
+      - null
+      - null
+      - null
+      - -1
+      - -1
+      - 0
+    - false
+    - !!binary |
+      BQAAAAAAAAAPAAAAAAAAABkAAAAAAAAAIwAAAAAAAAAtAAAAAAAAAA==
+  max_features: !!python/object/apply:numpy.core.multiarray._reconstruct
+    args:
+    - *id001
+    - !!python/tuple
+      - 0
+    - !!binary |
+      Yg==
+    state: !!python/tuple
+    - 1
+    - !!python/tuple
+      - 8
+    - *id002
+    - false
+    - !!binary |
+      AgAAAAAAAAADAAAAAAAAAAQAAAAAAAAABQAAAAAAAAAGAAAAAAAAAAcAAAAAAAAACAAAAAAAAAAJ
+      AAAAAAAAAA==
+  n_estimators: !!python/object/apply:numpy.core.multiarray._reconstruct
+    args:
+    - *id001
+    - !!python/tuple
+      - 0
+    - !!binary |
+      Yg==
+    state: !!python/tuple
+    - 1
+    - !!python/tuple
+      - 5
+    - *id002
+    - false
+    - !!binary |
+      CgAAAAAAAAAeAAAAAAAAADIAAAAAAAAARgAAAAAAAABaAAAAAAAAAA==
