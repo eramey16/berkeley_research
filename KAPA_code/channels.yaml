@@ -1,0 +1,557 @@
+### k%:ao:sc
+frautabort: # Wavefront sensor framerate auto-set abort
+    name: "Abort flag"
+    read_channel: "k%:ao:sc:frautabort"
+    keyword: "ao.frautabort"
+    type: flag
+
+# sc:wfo - Wavefront sensor offload loop
+aofotthr: # WFO - WFS Offload # AO focus offloading time threshold
+    name: "WFS Offload period"
+    read_channel: "k%:ao:sc:wfo:trig:timThresh"
+    keyword: 'ao.aofotthr'
+    type: float
+
+aofomode: # WFO mode # AO Focus Offloading Mode
+    name: "WFS Offload loop"
+    read_channel: "k%:ao:sc:wfo:trig:mode"
+    keyword: 'ao.aofomode'
+    type: flag # closed/open
+
+# sc:dar - Differential Atmospheric Refraction
+aodrzsim: # Value computed from DAR # AO DRZ Sim or Actual Zenith
+    name: "DAR value" # Check # TODO
+    read_channel: "k%:ao:sc:dar:zenSrc"
+    keyword: 'ao.aodrzsim'
+    type: float
+
+aodrena: # AO DAR Enable/Disable
+    name: "DAR enable/disable"
+    read_channel: "k%:ao:sc:dar:darEna"
+    keyword: 'ao.aodrena'
+    type: float # WHY # TODO
+
+# sc:aol - Status restore for AO system
+aoloop: # AO Loop
+    name: "AO Loop"
+    read_channel: "k%:ao:sc:aol:cmd"
+    keyword: 'ao.aoloop'
+    type: str # open/close/restore
+    values: ["open", "close", "restore"]
+
+# sc:cfg - Configuration?
+aofmmove: # FSM (field steering mirrors) move command
+    # Applies offset for the AO system
+    name: "Field Steering Mirrors"
+    read_channel: "k%:ao:sc:cfg:mvFsm.VAL"
+    keyword: "ao.aofmmove"
+    type: flag # enable/disable
+
+aolpmove: # Laser pointing move command
+    name: "Laser pointing mirror"
+    read_channel: "k%:ao:sc:cfg:mvLsp.VAL"
+    keyword: "ao.aolpmove"
+    type: flag # enabled: fixed - moves with FSM
+
+# sc:fc - focus control (for all devices)
+aofclbct: # LBWFS Focus Control
+    name: "LBWFS Focus Control"
+    read_channel: "k%:ao:sc:fc:LbwfsCtrl"
+    keyword: 'ao.aofclbct'
+    type: flag # off or on
+
+aofcosoc: # Manual offload of deformable mirror focus
+    name: "Manual (one-shot) Focus Output Control"
+    read_channel: "k%:ao:sc:fc:goLocOutCtrl"
+    keyword: 'ao.aofcosoc'
+    type: flag # off or on
+
+aofctroc: # Tracking focus output control # only used in LGS mode
+    name: "Tracking Focus Output Control"
+    read_channel: "k%:ao:sc:fc:trackOutCtrl"
+    keyword: 'ao.aofctroc'
+    type: flag # off or on
+
+aofcngct: # NGS focus control
+    name: "NGS focus control"
+    read_channel: "k%:ao:sc:fc:NgsCtrl"
+    keyword: 'ao.aofcngct'
+    type: flag # off/on
+
+aofclgct: # LGS focus control
+    name: "LGS focus control"
+    read_channel: "k%:ao:sc:fc:LgsElCtrl"
+    keyword: 'ao.aofclgct'
+    type: flag # off/on
+
+aofclbct: # LBWFS focus control
+    name: "LBWFS focus control"
+    read_channel: "k%:ao:sc:fc:LbwfsCtrl"
+    keyword: 'ao.aofclbct'
+    type: flag # off/on
+
+aofcc0so: # C0 Sodium Dichroic offset
+    name: "SOD focus offset" # for when the dichroic is in
+    read_channel: "k%:ao:sc:fc:c0SodOffset"
+    keyword: 'ao.aofcc0so'
+    type: float # 0 when no Dichroic, ~-0.4 when in
+
+# sc:ob - something to do with cameras?
+aotfenb: # TSS camera enable # TODO: is this focus or camera?
+    name: "TSS Camera"
+    read_channel: "k%:ao:sc:ob:tMov:enable"
+    keyword: 'ao.aotfenb'
+    type: flag # enable/disable
+
+aotsbsgx: # TSS (Tilt Sensor Stage) gold numbers # TODO: what are these?
+    name: "TSS Gold X"
+    read_channel: "k%:ao:sc:ob:tOff:bsXO"
+    keyword: 'ao.aotsbsgx'
+    type: float
+
+aotsbsgy: # ""
+    name: "TSS Gold Y"
+    read_channel: "k%:ao:sc:ob:tOff:bsYO"
+    keyword: 'ao.aotsbsgy'
+    type: float
+
+aotsbsgz: # ""
+    name: "TSS Gold Z"
+    read_channel: "k%:ao:sc:ob:tOff:bsZO"
+    keyword: 'ao.aotsbsgz'
+    type: float
+
+aotssdgx: # AO-TSS SOD Gold numbers # TODO: what are these?
+    name: "TSS SOD Gold X"
+    read_channel: "k%:ao:sc:ob:tOff:sodXO"
+    keyword: 'ao.aotssdgx'
+    type: float
+
+aotssdgy: # ""
+    name: "TSS SOD Gold Y"
+    read_channel: "k%:ao:sc:ob:tOff:sodYO"
+    keyword: 'ao.aotssdgy'
+    type: float
+
+aotssdgz: # ""
+    name: "TSS SOD Gold Z"
+    read_channel: "k%:ao:sc:ob:tOff:sodZO"
+    keyword: 'ao.aotssdgz'
+    type: float
+
+aotsgold: # DAR TSS which gold? # TODO: what does this mean?
+    name: "TSS gold number"
+    read_channel: "k%:ao:sc:ob:tOff:gold"
+    keyword: 'ao.aotsgold'
+    type: float
+
+# Why are these stages triggered from here and not k%:ao:ob?
+aotsx: # TSS stage x-position (mm)
+    # TODO: what does MM2M or M2MM conversion mean?
+    name: "TSS stage x-position"
+    read_channel: "k%:ao:sc:ob:tss:upx"
+    write_channel: "k%:ao:sc:ob:tss:udx"
+    keyword: 'ao.aotsx'
+    type: float
+
+aotsy: # TSS stage Y
+    name: "TSS stage y-position"
+    read_channel: "k%:ao:sc:ob:tss:upy"
+    write_channel: "k%:ao:sc:ob:tss:udy"
+    keyword: 'ao.aotsy'
+    type: float
+
+aotsgo: # TSS stage GO
+    name: "TSS stage trigger/active"
+    read_channel: "k%:ao:sc:ob:tss:active"
+    write_channel: "k%:ao:sc:ob:tss:trig"
+    keyword: 'ao.aotsgo'
+    type: flag
+
+aofmx: # FSM stage x-position
+    name: "FSM x-position" # in mm
+    read_channel: "k%:ao:sc:ob:fsm:upx"
+    write_channel: "k%:ao:sc:ob:fsm:udx"
+    keyword: 'ao.aofmx'
+    type: float
+
+aofmy: # FSM stage y-position
+    name: "FSM y-position"
+    read_channel: "k%:ao:sc:ob:fsm:upy"
+    write_channel: "k%:ao:sc:ob:fsm:udy"
+    keyword: 'ao.aofmy'
+    type: float
+
+aofmgo: # FSM stage GO
+    name: "FSM stage trigger/active"
+    read_channel: "k%:ao:sc:ob:fsm:active"
+    write_channel: "k%:ao:sc:ob:fsm:trig"
+    keyword: 'ao.aofmgo'
+    type: flag
+
+# sc:tto - Tip/Tilt offload loop
+aottmode: # AO Tip/Tilt Offloading Mode
+    # TODO: difference between this and aottenab?
+    name: "Tip-Tilt Offloading Mode"
+    read_channel: "k%:ao:sc:tto:trig:mode"
+    keyword: 'ao.aottmode'
+    type: flag # open/closed
+
+### k%:ao:ob: optical bench
+obpsxfs: # Plate scale field stop (F-stop) selection
+    name: "Plate Scale Field Stop"
+    read_channel: "k%:ao:ob:psXfsSel"
+    keyword: 'ao.obpsxfs'
+    type: str
+    values: ['2.4x2.4', '2.4x1.0', '1.0x1.0', '0.6x0.6']
+
+# ob:fcs - Focus Camera Stage
+obwfname: # FCS Stage named position
+    name: "FCS named position"
+    read_channel: "k%:ao:ob:fcs:name:nameOut"
+    write_channel: "k%:ao:ob:fcs:name:nameIn"
+    type: str
+
+obwfdsrc: # tracking vs. manual (not sure which is which)
+    name: "Demand Source for FCS" # TODO: what does this mean?
+    read_channel: "k%:ao:ob:fcs:demandSrc"
+    keyword: 'ao.obwfdsrc'
+    type: str
+    values: ['Manual', 'LocalSim', 'Tracking']
+
+obwfmove: # Slew control for FCS
+    name: "FCS Slew Control"
+    read_channel: "k%:ao:ob:fcs:slewActive"
+    write_channel: "k%:ao:ob:fcs:slew"
+    keyword: 'ao.obwfmove'
+    type: flag # Inactive/Active
+
+# ob:sod - Sodium Dichroic stage
+obsdname: # SOD stage named position
+    name: "SOD Named Position"
+    read_channel: "k%:ao:ob:sod:name:nameOut"
+    write_channel: "k%:ao:ob:sod:name:nameIn"
+    keyword: "ao.obsdname"
+    type: str
+
+obsdstst: # SOD state
+    name: "SOD Stage State"
+    read_channel: "k%:ao:ob:sod:state"
+    keyword: "ao.obsdstst"
+    type: str
+
+# ob:afm - AFM stage
+obamname:
+    name: "AFM Named Position"
+    read_channel: "k%:ao:ob:afm:name:nameOut"
+    write_channel: "k%:ao:ob:afm:name:nameIn"
+    keyword: "ao.obamname"
+    type: str
+
+obamstst: # AFM state
+    name: "AFM Stage State"
+    read_channel: "k%:ao:ob:afm:state"
+    keyword: "ao.obamname"
+    type: str
+
+# ob:afs - AFS stage
+obasname:
+    name: "AFS Named Position"
+    read_channel: "k%:ao:ob:afs:name:nameOut"
+    write_channel: "k%:ao:ob:afs:name:nameIn"
+    keyword: "ao.obasname"
+    type: str
+
+obasstst: # AFS state
+    name: "AFS Stage State"
+    read_channel: "k%:ao:ob:afs:state"
+    keyword: "ao.obasstst"
+    type: str
+
+# ob:sfd - #TODO
+obsi: # User value of SFD (mm)
+    name: "User value of SFD (mm)"
+    read_channel: "k%:ao:ob:sfd:actPosLoc"
+    write_channel: "k%:ao:ob:sfd:goLoc"
+    keyword: 'ao.obsi'
+    type: float
+
+# ob:wps - WPS (Wavefront Sensor Pupil Singlet) stage 
+obwpname: # WPS Named Position
+    name: "WPS Named Position"
+    read_channel: "k%:ao:ob:wps:name:nameOut"
+    write_channel: "k%:ao:ob:wps:name:nameIn"
+    keyword: 'ao.obwpname'
+    type: str
+
+obwpstst: # WPS State
+    name: "WPS Stage State"
+    read_channel: "k%:ao:ob:wps:state"
+    keyword: "ao.obwpstst"
+    type: str
+
+obwpmove: # WPS Slew Control
+    name: "WPS Slew Control"
+    read_channel: "k%:ao:ob:wps:slewActive"
+    write_channel: "k%:ao:ob:wps:slew"
+    keyword: 'ao.obwpmove'
+    type: flag # Inactive/Active
+
+obwpdsrc: # Demand source for WPS # tracking vs. manual? # TODO
+    name: "WPS Source"
+    read_channel: "k%:ao:ob:wps:demandSrc"
+    keyword: 'ao.obwpdsrc'
+    type: str
+    values: ["Manual", "LocalSim", "Tracking"]
+
+# ob:wnd - ND Filter stage
+obwnname: # WND Named Position
+    name: "WND Named Position"
+    read_channel: "k%:ao:ob:wnd:name:nameOut"
+    write_channel: "k%:ao:ob:wnd:name:nameIn"
+    keyword: 'ao.obwnname'
+    type: str
+
+obwnstst: # WND State
+    name: "WND Stage State"
+    read_channel: "k%:ao:ob:wnd:state"
+    keyword: 'ao.obwnstst'
+    type: str
+
+# ob:vmic
+wyko_shutter: # WYKO Shutter Open/Close
+    name: "WYKO shutter"
+    read_channel: "k%:ao:ob:vmic:wykoShutCmd"
+    keyword: "ao.aowykoshcmd"
+    type: flag
+
+### k%:ao:wc
+trsrec: # telemetry recording off/on
+    name: "Telemetry recording"
+    read_channel: "k%:ao:wc:trsRecordRB"
+    write_channel: "k%:ao:wc:trsRecord"
+    keyword: "ao.trsrec"
+    type: int # Maybe flag? # TODO
+
+# wc:dt - Down Tip/Tilt Loop (NGS tip-tilt)
+dt_loop: # DTT loop command
+    name: "DTT loop"
+    read_channel: "k%:ao:wc:dt:loopCmd"
+    keyword: "ao.dtlp"
+    type: flag
+
+dtsensor: # DTT loop sensor
+    name: "DT loop sensor" # TODO
+    read_channel: "k%:ao:wc:dt:sensorRB"
+    write_channel: "k%:ao:wc:dt:sensorCmd"
+    keyword: 'ao.dtsensor'
+    type: str
+    values: ['WFS', 'STRAP', 'NIRTT', 'NIRTT+STRAP']
+
+dtdst: # see UT loop # TODO
+    name: "DT disturbance function"
+    read_channel: "k%:ao:wc:dt:disturbRB"
+    write_channel: "k%:ao:wc:dt:disturb"
+    keyword: 'ao.dtdst'
+    type: float
+
+dtservo: # DTT loop servo coefficients # TODO
+    name: "DT servo coefficients"
+    read_channel: "k%:ao:wc:dt:sv:rb"
+    write_channel: "k%:ao:wc:dt:sv:spg"
+    keyword: 'ao.dtservo'
+    type: float
+
+dtclp: # See ut loop # TODO
+    name: "DT CLMP loop"
+    read_channel: "k%:ao:wc:dt:cLoopRB"
+    write_channel: "k%:ao:wc:dt:cLoop"
+    keyword: 'ao.dtclp'
+    type: flag
+
+dtgain: # DTT loop gain
+    name: "DT loop gain"
+    read_channel: "k%:ao:wc:dt:sv:gain"
+    keyword: 'ao.dtgain'
+    type: float
+
+# wc:ut - Up Tip/Tilt Loop (LGS tip-tilt)
+utlp: # UTT loop command
+    name: "UTT loop"
+    read_channel: "k%:ao:wc:ut:loopCmd"
+    keyword: 'ao.utlp'
+    type: flag
+
+utdst: # Start disturbance fn # TODO
+    name: "UT disturbance function"
+    read_channel: "k%:ao:wc:ut:disturbRB"
+    write_channel: "k%:ao:wc:ut:disturb"
+    keyword: 'ao.utdst'
+    type: int # TODO - {ON, OFF} but also int???
+
+utservo: # UTT Servo Coefficients # TODO
+    name: "UT servo coefficients"
+    read_channel: "k%:ao:wc:ut:sv:rb"
+    write_channel: "k%:ao:wc:ut:sv:spg"
+    keyword: 'ao.utservo'
+    type: float
+
+utclp: # UTT CLMP Ctrl Loop Open/Close # TODO
+    name: "UT CLMP loop"
+    read_channel: "k%:ao:wc:ut:cLoopRB"
+    write_channel: "k%:ao:wc:ut:cLoop"
+    keyword: 'ao.utclp'
+    type: flag
+
+utgain: # UTT loop gain
+    name: "UT Loop gain"
+    read_channel: "k%:ao:wc:ut:sv:gain"
+    keyword: 'ao.utgain'
+    type: float
+
+# wc:dm - Deformable Mirror Loop
+dmlp: # Open/Close
+    name: "DM loop"
+    read_channel: "k%:ao:wc:dm:loopCmd"
+    keyword: "ao.dmlp"
+    type: flag
+
+dmservo: # DM Servo Coefficients # TODO
+    name: "DM servo coefficients"
+    read_channel: "k%:ao:wc:dm:sv:rb"
+    write_channel: "k%:ao:wc:dm:sv:spg"
+    keyword: 'ao.dmservo'
+    type: float
+
+dmgain: # DM loop gain
+    name: "DM loop gain"
+    read_channel: "k%:ao:wc:dm:sv:gain"
+    keyword: 'ao.dmgain'
+    type: float
+
+# wc:st - STRAP
+ststate: # STRAP state
+    name: "STRAP state"
+    read_channel: "k%:ao:wc:st:state"
+    write_channel: "k%:ao:wc:none" # TODO: add check for "none"
+    keyword: 'ao.ststate'
+    type: str
+    values: ['Standby', 'Initing', 'Normal', 'Faulted']
+
+ststby: # STRAP standby mode
+    name: "STRAP stand-by system"
+    read_channel: "k%:ao:wc:none"
+    write_channel: "k%:ao:wc:st:standby"
+    keyword: 'ao.ststby'
+    type: flag
+
+# wc:ws
+wssmbin: # Binning for Wavefront Sensor Camera
+    name: "WFS Bin Factor"
+    read_channel: "k%:ao:wc:ws:bin"
+    write_channel: "k%:ao:wc:none"
+    keyword: 'ao.wssmbin'
+    type: int
+    values: [1, 2]
+
+wsfrrt: # Frame rate for WFS Camera (Hz)
+    name: "WFS Frame Rate"
+    read_channel: "k%:ao:ws:frameRate"
+    keyword: 'ao.wsfrrt'
+    type: int
+
+### k%:ao:ls - Laser configuration
+lsltlson: # laser on # TODO
+    name: "Laser on" # maybe?
+    read_channel: "k%:ao:ls:ltcsLsOn"
+    keyword: 'ao.lsltlson'
+    type: flag
+
+lspntrci: # Pointing residual compensation integrator-zero # TODO
+    name: "Pointing residual compensation integrator"
+    read_channel: "k%:ao:ls:resSumReset"
+    keyword: 'ao.lspntrci'
+
+lspntrce: # Pointing residual compensation
+    name: "Pointing residual compensation"
+    read_channel: "k%:ao:ls:residCtrl"
+    keyword: 'ao.lspntrce'
+    type: flag
+
+### k%:ao:au:misc - Miscellaneous?
+obptname: # Object the AO is pointing to
+    name: "LGSAO Object Name"
+    read_channel: "k%:ao:au:misc:obptname"
+    keyword: "ao.obptname"
+    type: str
+
+recapsmt: # Recon aperture select method
+    name: "Recon Aperture Select"
+    read_channel: "k%:ao:au:misc:recapsmt"
+    keyword: 'ao.recapsmt'
+    type: str
+
+### k%:ao:lb - LBWFS Controls
+lbtmtocp: # LBWFS Time to Complete Exposure
+    name: "LBWFS - time to complete exposure"
+    read_channel: "k%:ao:lb:lbTmToCp"
+    keyword: 'ao.lbtmtocp'
+    type: float
+
+lgrmswf: # LGSAO RMS WF Residual
+    name: "RMS Wavefront Residual"
+    read_channel: "k%:ao:lb:lgrmswf"
+    keyword: 'ao.lgrmswf'
+    type: float
+
+aolbloop: # AO LBWFS Loop Control # TODO
+    name: "AO LBWFS Loop"
+    read_channel: "k%:ao:lb:loop"
+    keyword: 'ao.aolbloop'
+    type: int
+
+aolblpstr: # LBWFS Loop Control String
+    name: "LBWFS Loop Control"
+    read_channel: "k%:ao:lb:aolblpstr"
+    keyword: 'ao.aolblpstr'
+    type: str
+
+lblpnfra: # LBWFS Loop n frames # TODO: What does this mean?
+    name: "LBWFS Loop N-frames"
+    read_channel: "k%:ao:lb:lblpnfra"
+    keyword: 'ao.lblpnfra'
+    type: int
+
+aolbsvcg: # LBWFS Save Cogs # TODO: What does this mean?
+    name: "LBWFS Save Cogs"
+    read_channel: "k%:ao:lb:svCg"
+    keyword: 'ao.aolbsvcg'
+    type: flag # 0/1
+
+lbtmtocp: # LBWFS Time to Complete Exposure
+    name: "LBWFS Time to Complete Exposure"
+    read_channel: "k%:ao:lb:lbTmToCp"
+    keyword: 'ao.lbtmtocp'
+    type: float
+
+### k%:dcs - Drive Control System
+rotdest: # Rotator User Destination (degrees)
+    name: "Rotator User Destination (deg)"
+    read_channel: "k%:dcs:pnt:fast.RDSN"
+    write_channel: "k%:dcs:pnt:fast.PRDN"
+    keyword: "dcs.rotdest"
+    type: float
+
+rotmode: # Rotator tracking mode
+    name: "Rotator Tracking Mode"
+    read_channel: "k%:dcs:pnt:fast.ROTM"
+    write_channel: "k%:dcs:pnt:fast.DROT"
+    keyword: "dcs.rotmode"
+    type: str
+    values: ['unknown', 'position angle', 'vertical angle', 'stationary']
+
+guidwave: # Guidestar Wavelength (microns)
+    name: "Guidestar Wavelength (micron)"
+    read_channel: "k%:dcs:pnt:slow.GWAV"
+    keyword: 'dcs.guidwave'
+    type: float
