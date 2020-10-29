@@ -19,12 +19,19 @@ plot_type = "telemetry"
 
 good_color = 'blue'
 bad_colors = [(1,1,0), (1,128/255.0,0), (1,0,0)]
+m1_3 = r'[$m^{\frac{1}{3}}$]'
 
 default_settings = {
     'label': {
         'mass': 'MASS [as]',
         'dimm': 'DIMM [as]',
         'masspro': 'MASSPRO [as]',
+        'masspro_half': 'MASSPRO 0.5km '+m1_3,
+        'masspro_1': 'MASSPRO 1km '+m1_3,
+        'masspro_2': 'MASSPRO 2km '+m1_3,
+        'masspro_4': 'MASSPRO 4km '+m1_3,
+        'masspro_8': 'MASSPRO 8km '+m1_3,
+        'masspro_16': 'MASSPRO 16km'+m1_3,
         'wind_speed': 'Wind Speed [kts]',
         'wind_direction': 'Wind Direction',
         'temperature': 'Temperature [C]',
@@ -112,6 +119,10 @@ def savefig(fig, filename):
 
 def get_labels(var_names, settings=default_settings, units=True):
     """ Gets plot labels for variable names """
+    single = isinstance(var_names, str)
+    if single:
+        var_names = [var_names]
+    
     labels = []
     for var_name in var_names:
         label = var_name if var_name not in settings['label'] else settings['label'][var_name]
@@ -119,7 +130,7 @@ def get_labels(var_names, settings=default_settings, units=True):
             label = label.split("[")[0].strip()
         labels.append(label)
     
-    return labels
+    return labels[0] if single else labels
 
 ### Grid plotting function
 def plot_vars(data, x_vars, y_vars=None, x_err=None, y_err=None, c_var=None, 
@@ -442,27 +453,51 @@ def plot_array(data_file, data_type='offset centroid', map_file=sub_ap_file,
         savefig(fig, filename)
     plt.show()
 
-def correlation_matrix(data, var_names=None, figsize=(10,10), cmap=cm.coolwarm, fontsize=12, cax=[.91, .125, 0.02, 0.755],
-                       settings=default_settings, save=False, filename=None):
+def correlation_matrix(data, var_names=None, corr_type='pearson', figsize=(10,10), cmap=cm.coolwarm, 
+                       fontsize=12, cax=[.91, .125, 0.02, 0.755], flatten=False, settings=default_settings,
+                       save=False, filename=None):
     fig, ax = plt.subplots(figsize=figsize)
     if var_names is None:
         var_names = data.columns
     
     corr_data = data[var_names]
-    labels = get_labels(var_names, settings, units=False)
+    
+    corr = corr_data.corr(method=corr_type)
     
     # Plot
-    color = ax.imshow(corr_data.corr(), interpolation="nearest", cmap=cmap, vmin = -1)
-    ax.grid(True)
-    ticks = np.array(range(len(labels)))-0.01
-    ax.set_xticks(ticks)
-    ax.set_yticks(ticks)
-    ax.set_xticklabels(labels,fontsize=fontsize,rotation=65)
-    ax.set_yticklabels(labels,fontsize=fontsize)
+    if flatten: # 1D plot
+        corr_strength = np.abs(corr[flatten])
+        corr_strength = corr_strength[var_names]
+        
+        # Sort by corr. strength
+        corr_strength = corr_strength.sort_values(ascending=False)
+        
+        # Remove self-reference
+        corr_strength = corr_strength[corr_strength.index!=flatten]
+        
+        ticks = np.arange(len(corr_strength))
+        labels = get_labels(corr_strength.index)
+        ax.bar(ticks, corr_strength)
+        
+        # Center line
+        ax.plot([-2, len(corr_strength)+1], [0, 0], "k-")
+        ax.set_xlim([-2, len(corr_strength)+1])
+        
+    else: # 2D plot
+        labels = get_labels(var_names, settings, units=False)
+        ticks = np.arange(len(labels))
+        color = ax.imshow(corr, interpolation="nearest", cmap=cmap, vmin = -1)
+        ax.grid(True)
+        ax.set_yticks(ticks)
+        ax.set_yticklabels(labels,fontsize=fontsize)
+        
+        # Add colorbar
+        color_ax = fig.add_axes(cax)
+        plt.colorbar(color, cax = color_ax).set_label("Correlation strength",fontsize=fontsize)
     
-    # Add colorbar
-    color_ax = fig.add_axes(cax)
-    plt.colorbar(color, cax = color_ax).set_label("Correlation strength",fontsize=fontsize)
+    # Finish plot
+    ax.set_xticks(ticks)
+    ax.set_xticklabels(labels,fontsize=fontsize,rotation=50, ha='right')
     
     if save:
         if filename is None:

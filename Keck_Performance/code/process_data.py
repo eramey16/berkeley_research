@@ -18,6 +18,7 @@ use_cols = ['strehl', 'fwhm', 'airmass', 'az', 'mass', 'dimm', 'wind_speed',
 nirc2_mjd = "mjd"
 weather_mjd = "cfht_mjd"
 seeing_mjds = ["mass_mjd", "dimm_mjd", "masspro_mjd"]
+telem_mjd = "telem_mjd"
 X_cols = use_cols[2:]
 Y_cols = use_cols[:2]
 
@@ -65,7 +66,7 @@ def replace_nans(array_like):
     
     return data
 
-def clean(data, dropna=False, delta_t_weather=None, delta_t_seeing=None):
+def clean(data, dropna=False, delta_t_weather=None, delta_t_seeing=None, delta_t_telem=None):
     """
     Filter telemetry/weather/science data for invalid values:
     Strehl < 0
@@ -75,6 +76,8 @@ def clean(data, dropna=False, delta_t_weather=None, delta_t_seeing=None):
     returns: the filtered array
     """
     data_clean = data.copy()
+    data_clean.columns = [x.lower() for x in data.columns]
+    
     if dropna:
         data_clean = data_clean.dropna()
     
@@ -93,15 +96,27 @@ def clean(data, dropna=False, delta_t_weather=None, delta_t_seeing=None):
     if 'lgrmswf' in data_clean.columns:
         data_clean = data_clean[data_clean['lgrmswf']<1500]
     
+    # Filter weather
     if delta_t_weather and weather_mjd in data_clean:
         delta_t = np.abs(data_clean[weather_mjd]-data_clean[nirc2_mjd])*24*60 # minutes
-        data_clean = data_clean[delta_t<delta_t_weather]
+        data_clean = data_clean[delta_t < delta_t_weather]
     
+    # Filter seeing
     if delta_t_seeing and all(s in data_clean for s in seeing_mjds):
         for s_mjd in seeing_mjds:
             delta_t = np.abs(data_clean[s_mjd]-data_clean[nirc2_mjd])*24*60 # minutes
-            data_clean = data_clean[delta_t<delta_t_seeing]
+            data_clean = data_clean[delta_t < delta_t_seeing]
     
+    # Filter telemetry
+    if delta_t_telem is not None and telem_mjd in data_clean:
+        delta_t = (data_clean[telem_mjd]-data_clean[nirc2_mjd])*24*3600 # seconds
+        if isinstance(delta_t_telem, (float, int)): # Same +/- filter bounds
+            data_clean = data_clean[np.abs(delta_t) < delta_t_telem]
+        elif isinstance(delta_t_telem, (list, tuple)): # Different +/- filter bounds
+            data_clean = data_clean[delta_t > delta_t_telem[0]]
+            data_clean = data_clean[delta_t < delta_t_telem[1]]
+    
+    data_clean.reset_index(inplace=True)
     return data_clean
 
 def split(data):

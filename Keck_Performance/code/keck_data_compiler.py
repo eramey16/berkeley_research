@@ -7,30 +7,43 @@
 import pandas as pd
 import numpy as np
 import os
+import re
 import datetime
 import pytz
 import time
 import glob
 import urllib
+import yaml
 from astropy.table import Table
 from astropy.time import Time, TimezoneInfo
 from astropy import units as u, constants as c
 from datetime import datetime, timezone
 from astropy.io import fits
+from scipy.io import readsav
 
 MAX_LEN = 10 # Maximum length of a file
 time_limit = 100 # Minutes between nirc2 and secondaries
 
 root_dir = '/g/lu/data/gc/lgs_data/' # Main data directory
-data_dir = '/u/emily_ramey/work/Keck_Performance/data/' # the directory I need to save things to because I don't have write access
+data_dir = '/u/emily_ramey/work/Keck_Performance/data/' # Data directory
+save_dir = data_dir+"combined_data/"
 seeing_dir = data_dir+'seeing_data/' # seeing directory
 weather_dir = data_dir+'weather_data/' # weather directory
+telem_dir = "/g/lu/data/keck_telemetry/"
 seeing_url = 'http://mkwc.ifa.hawaii.edu/current/seeing/'
 weather_url = 'http://mkwc.ifa.hawaii.edu/archive/wx/cfht/'
+telem_filenum_match = "c(\d+).fits"
+
+savefile = save_dir+'keck_metadata_all.dat'
+logfile = save_dir+'keck_metadata_all.log'
+bad_files = save_dir+"keck_bad_files.yaml"
+logstring = ''
+
 verbose = True
 
 months = ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
 strehl_cols = ['file', 'strehl', 'rms_err', 'fwhm', 'mjd']
+telem_cols = ['telem_file', 'telem_mjd', 'rms_mean', 'rms_std']
 nirc2_fields = ['AIRMASS', 'ITIME', 'COADDS', 'FWINAME', 'AZ', 'DMGAIN', 'DTGAIN', 'XREF', 'YREF', 
                'XSTREHL', 'YSTREHL', 'WSFRRT', 'AOLBFWHM', 'LSAMPPWR', 'LGRMSWF', 'AOAOAMED', 'TUBETEMP']
 ### Types of seeing files
@@ -50,20 +63,18 @@ n_weather_cols = 10
 bad_files_known = data_dir+"keck_bad_files.dat"
 bad_files_list = []
 
-
-### Read in invalid values
-#pd.read_csv(bad_files)
-
-### Time/date conversion functions:
-
+### Log/output
 def vprint(msg):
     """
     Prints a message to the console if in verbose mode.
     """
+    global logstring
     if verbose:
         print(msg)
+    
+    logstring+=msg+"\n"
 
-
+### Time/date conversion functions:
 def month_atoi(month, asInt=True):
     """
     Converts a calendar month's name into an integer
@@ -83,11 +94,15 @@ def mjd_to_ds(mjd_list):
     Converts a list of Modified Julian Dates to formatted date strings
     dateString = {year}{month}{day} e.g. 20060718
     """
+    single = isinstance(mjd_list, float)
+    if single:
+        mjd_list = [mjd_list]
+    
     datetimes = Time(mjd_list, format='mjd').datetime
     dates = [dt.date() for dt in datetimes]
     fmt = lambda s: '0'+str(s) if s<10 else s # To format month and day
     dateStrings = [f"{d.year}{fmt(d.month)}{fmt(d.day)}" for d in dates]
-    return dateStrings
+    return dateStrings if not single else dateStrings[0]
 
 def hst_to_utc(date):
     """
@@ -175,7 +190,7 @@ def load_nirc2(nirc2_epoch):
     elif os.path.isfile(nirc2_dir + 'irs33N.strehl') == True:
         strehl_src = pd.read_csv(nirc2_dir + 'irs33N.strehl', delim_whitespace = True, header = None, skiprows = 1)
     else: # Exit if not found
-        vprint("Error: No Strehl file found for epoch "+nirc2_epoch+". Exiting.")
+        vprint("\tError: No Strehl file found for epoch "+nirc2_epoch+". Exiting.")
         return
     
     ### Correct column names
@@ -246,7 +261,7 @@ def load_seeing(obs_date, s):
     return seeing
     
 
-def load_all_seeing(mjd_list):
+def load_all_seeing(mjd_list, bad_data):
     """
     Loads all seeing data from dates given in MJD format
     Returns: dictionary of dataframes as {mass: mass_df, dimm: dimm_df, masspro: masspro_df}
@@ -257,7 +272,6 @@ def load_all_seeing(mjd_list):
     all_seeing = {}
     
     warn_dates = []
-    
     # Loop through dimm, mass, masspro
     for s in s_types:
         # Initialize dataframe
@@ -265,20 +279,30 @@ def load_all_seeing(mjd_list):
         
         # Loop through observation dates
         for obs_date in datestrings:
+            savestring = s+"_"+obs_date
+            
+            if savestring in bad_data['seeing']:
+                continue
+            
+            # Load seeing data
             data = load_seeing(obs_date, s)
             if data is not None:
                 seeing = seeing.append(data, ignore_index=True)
             else:
+                bad_data['seeing'].append(savestring)
                 if obs_date not in warn_dates:
                     warn_dates.append(obs_date)
         
         # Save result in list
         all_seeing[s] = seeing if not seeing.empty else None
     
-    if warn_dates != []:
-        vprint(f'\tWarning: Could not retrieve seeing data for dates: {warn_dates}')
+    if warn_dates==datestrings:
+        vprint(f'\tWarning: Could not retrieve seeing')
+    elif len(warn_dates) != 0:
+        warn_dates = ", ".join(warn_dates)
+        vprint(f'\tWarning: Could not retrieve seeing for dates: {warn_dates}')
     else:
-        vprint(f'\tMessage: Retrieved seeing data for all files')
+        vprint(f'\tMessage: Retrieved seeing for all files')
     
     # Return seeing data as [mass, dimm, masspro]
     return all_seeing
@@ -326,8 +350,7 @@ def load_weather(obs_date):
     return weather if not weather.empty else None
     
 
-
-def load_all_weather(mjd_list):
+def load_all_weather(mjd_list, bad_data):
     """
     Loads all weather data from cfht files with dates given in MJD format
     Returns: pandas dataframe with weather keywords
@@ -341,24 +364,128 @@ def load_all_weather(mjd_list):
     
     ### Loop through dates
     for obs_date in datestrings:
+        if obs_date in bad_data['weather']:
+            continue
         data = load_weather(obs_date)
         
         if data is not None:
             all_weather = all_weather.append(data, ignore_index=True)
         else:
+            bad_data['weather'].append(obs_date)
             if obs_date not in warn_dates:
                 warn_dates.append(obs_date)
     
-    if warn_dates != []:
+    if warn_dates==datestrings:
+        vprint(f'\tWarning: Could not retrieve weather data')
+    elif len(warn_dates) != 0:
+        warn_dates = ", ".join(warn_dates)
         vprint(f'\tWarning: Could not retrieve weather data for dates: {warn_dates}')
     else:
         vprint(f'\tMessage: Retrieved weather data for all files')
     
     return all_weather if not all_weather.empty else None
-    
-            
 
-def populate_df(nirc2_epoch):
+def get_telem_mjd(telem):
+    """ Extracts the Modified Julian Date from the given telemetry data """
+    # Get MJD from telemetry
+    if 'header' in telem.keys():
+        mjd_idx = [i for i in range(len(telem.header)) if 'MJD-OBS' in telem.header[i].decode('utf-8')]
+        if len(mjd_idx)!=1: # No MJD field in header or more than one
+            print(f"Error in file {i} ({filenames[i]}) header: could not retrieve MJD")
+        else: # Save MJD to dataframe
+            mjd_idx = mjd_idx[0]
+            mjd = float(re.findall("\d+\.\d+", telem.header[mjd_idx].decode('utf-8'))[0])
+    elif 'tstamp_str_start' in telem.keys():
+        timestring = telem.tstamp_str_start.decode('utf-8')
+        fmt = "%Y-%m-%dT%H:%M:%S.%f"
+        dt = datetime.strptime(timestring, fmt)
+        t = Time(dt, format='datetime', scale='utc')
+        mjd = t.mjd
+    else:
+        print(f"File {i} ({filenames[i]}) has no header")
+        return
+    
+    return mjd
+
+### Load telemetry for one NIRC2 file
+def load_telem(datestring, filenum, nirc2_mjd):
+    """ Loads and aggregates telemetry info from one file """
+    acceptable_dt = .0001 # precision of mjd match (~10 seconds or so)
+    
+    # Telemetry file will match:
+    telem_pattern = f"/g/lu/data/keck_telemetry/{datestring}*/**/n?{filenum}_*.sav"
+    
+    # Get all matching files
+    telem_files = glob.glob(telem_pattern, recursive=True)
+    if len(telem_files) == 0: # No matches
+        return
+    
+    for telem_file in telem_files:
+        # Read telemetry file
+        telem = readsav(telem_file)
+        
+        # Get mjd
+        telem_mjd = get_telem_mjd(telem)
+        
+        if np.abs(telem_mjd-nirc2_mjd) < acceptable_dt:
+            # Get mean and std of rms residuals
+            rms_mean = np.mean(telem.a.residualrms[0][0])
+            rms_std = np.std(telem.a.residualrms[0][0])
+            return telem_file, telem_mjd, rms_mean, rms_std
+            
+        del telem
+    
+    return None
+    
+
+### Load all telemetry for one epoch
+def load_all_telem(files, mjds, bad_data):
+    """ Loads all telemetry info for files in nirc2_data """
+    N = len(files)
+    data = pd.DataFrame(index=range(N), columns=telem_cols)
+    
+    warn_files = []
+    for i in range(len(files)):
+        file, mjd = files[i], mjds[i]
+        datestring = mjd_to_ds(mjd)
+        savestring = datestring+"_"+file
+        
+        # Skip bad data
+        if savestring in bad_data['telemetry']:
+            continue
+        
+        # Get file number
+        filenum = re.search(telem_filenum_match, file)
+        filenum = filenum[1:]
+        if not filenum:
+            bad_data['telemetry'].append(savestring)
+            vprint(f"\tWarning: Couldn't find file number in {datestring}, {file}")
+            warn_files.append(file)
+            continue
+        
+        filenum = filenum[1]
+        
+        # Load telemetry for file pattern
+        results = load_telem(datestring, filenum, mjd)
+        if results is None:
+            bad_data['telemetry'].append(savestring)
+            vprint(f"\tWarning: No time matches for {datestring}, {file}")
+            warn_files.append(file)
+        data.loc[i] = results
+    
+    # Warn about bad data
+    nans = data.isna().any(axis=1)
+    if not any(nans): # No rows have nans
+        vprint(f'\tMessage: Retrieved telemetry for all files')
+        return data
+    elif all(nans): # All rows have nans
+        vprint(f"\tWarning: Could not retrieve telemetry")
+    elif len(warn_files)!=0:
+        vprint(f"\tWarning: Could not retrieve telemetry for files {', '.join(warn_files)}")
+    
+    return data
+
+def populate_df(nirc2_epoch, bad_data):
     '''
     This takes in a nirc2 epoch (two digit year, first three letters of month,
     lgs, and a number if there were multiple days, ie. 04jullgs1), looks for and
@@ -368,16 +495,20 @@ def populate_df(nirc2_epoch):
     ### Load NIRC2 data from a file
     nirc2_data = load_nirc2(nirc2_epoch)
     if nirc2_data is None:
-        vprint("Warning: Failed to populate dataframe for "+nirc2_epoch)
+        vprint("\tWarning: Failed to populate dataframe for "+nirc2_epoch)
         return
+    
+    ### Load telemetry data from servers
+    telem_data = load_all_telem(nirc2_data.file, nirc2_data.mjd, bad_data)
+    nirc2_data = nirc2_data.join(telem_data)
     
     ### Load seeing data from Mauna Kea website
     # Find unique days in observation, +/- 1 day for padding
     unique_mjds = np.unique(np.floor(list(nirc2_data.mjd-1)+list(nirc2_data.mjd)+list(nirc2_data.mjd+1)))
     
     ### Pull seeing and weather data from relevant dates
-    seeing_data = load_all_seeing(unique_mjds)
-    weather_data = load_all_weather(unique_mjds)
+    seeing_data = load_all_seeing(unique_mjds, bad_data)
+    weather_data = load_all_weather(unique_mjds, bad_data)
     
     ### Match NIRC2 dates with seeing information
     # Initialize dictionary
@@ -410,37 +541,68 @@ def populate_df(nirc2_epoch):
     all_data = nirc2_data.join(closest_data)
     return all_data
 
-def update():
+def update(savefile=savefile, logfile=logfile, bad_files=bad_files):
     """
     Calling this function will backup the old file, automatically seek out new lgs data,
     and save an updated datatable
     """
+    ### Set up bad files
+    if os.path.isfile(bad_files):
+        with open(bad_files) as f:
+            bad_data = yaml.load(f, Loader=yaml.FullLoader)
+    else: bad_data = {'nirc2': [], 'weather': [], 'seeing': [], 'telemetry': []}
+    
     ### If file already exists
-    data_file = data_dir + 'keck_metadata.dat'
-    if os.path.isfile(data_file):
+    if os.path.isfile(savefile):
         # Read in previous file
-        all_data = pd.read_csv(data_file)
-        # Back up past file
+        all_data = pd.read_csv(savefile)
+        
+        # Get backup filename
         now = datetime.now()
-        backup_file = data_dir + 'keck_metadata_backup_' + now.strftime("%Y%m%d") + '.dat'
+        filename = os.path.basename(savefile)
+        filestub, ext = filename.split('.')[-2:]
+        
+        # Back up past file
+        backup_file = f"{data_dir}{filestub}_backup_{now.strftime('%Y%m%d')}.{ext}"
         all_data.to_csv(backup_file, index=False)
         vprint('Previous data backed up as ' + backup_file)
         
-        epochs = np.unique(all_data['epoch'])
+        epochs = np.unique(all_data['epochs'])
+    
     else: # Initialize new dataframe
         all_data = pd.DataFrame()
         epochs = []
     
+    with open(logfile, 'w') as _:
+            pass # Clear the file
+    
+    global logstring
     ### Add new files
     for file in os.listdir(root_dir):
-        if len(file) >= MAX_LEN or file in epochs:
+        if file in bad_data['nirc2'] or file in epochs:
+            continue
+        elif len(file) >= MAX_LEN:
+            bad_data['nirc2'].append(file)
+            vprint(f"Message: Skipping invalid file: {file}")
             continue
         else:
-            data = populate_df(file)
+            data = populate_df(file, bad_data)
             if data is None:
+                bad_data['nirc2'].append(file)
                 continue
             all_data = all_data.append(data)
+        ### Write log
+        with open(logfile, 'a') as log:
+            log.write(logstring)
+            logstring = ''
+    
+    print(bad_data)
             
     ### Write dataframe to file
-    all_data.to_csv(data_file, index=False)
+    all_data.to_csv(savefile, index=False)
+    
+    print(f"data saved to {savefile}")
+    
+    with open(bad_files, 'w') as file:
+        yaml.dump(bad_data, file)
     
