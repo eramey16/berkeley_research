@@ -1,7 +1,6 @@
 import matplotlib.animation as animation
 import matplotlib.pyplot as plt
 import numpy as np
-from IPython.display import HTML
   
 # creating a blank window  
 # for the animation  
@@ -13,7 +12,7 @@ line, = axis.plot([], [], lw = 2)
   
 # what will our line dataset  
 # contain?  
-def init():
+def init():  
     line.set_data([], [])  
     return line,  
   
